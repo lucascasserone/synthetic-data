@@ -1,0 +1,11 @@
+version: "3.8"
+services:
+  synthetic:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./outputs:/srv/app/outputs
+      - ./data:/srv/app/data
+    environment:
+      - PYTHONUNBUFFERED=1
