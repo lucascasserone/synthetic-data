@@ -4,59 +4,83 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Heuriskien Synthetic Data — DaaS (Wizard + Chat IA)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#0f1117;--panel:#151b24;--muted:#9fb0c9;--text:#e7eeff;
-    --brand:#7aa2ff;--accent:#22d3ee;--ok:#22c55e;--warn:#f59e0b;--err:#ef4444;
-    --line:#27324a;--hover:#1a2333;--focus:#3a66ff;--chip:#162132;--chipline:#2d3a57
+    --brand:#3b82f6;--accent:#22d3ee;--ok:#22c55e;--warn:#f59e0b;--err:#ef4444;
+    --line:#27324a;--hover:#1a2333;--focus:#3b82f6;--chip:#162132;--chipline:#2d3a57
   }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif}
   a{color:var(--brand);text-decoration:none}
-  .top{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line);background:#0a0f16;position:sticky;top:0;z-index:10}
-  .brand{font-weight:900;letter-spacing:.2px}
+  .top{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line);background:#0a0f16;position:sticky;top:0;z-index:100}
+  .brand{font-weight:800;letter-spacing:.2px}
   .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
   input[type=text]{background:#101728;border:1px solid var(--line);color:#eaf2ff;padding:8px 10px;border-radius:8px;min-width:260px}
   input:focus, select:focus, textarea:focus, button:focus{outline:2px solid var(--focus); outline-offset:2px}
   .wrap{max-width:1200px;margin:0 auto;padding:18px}
   .tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
-  .tab{background:#101728;border:1px solid var(--line);color:#cfe0ff;padding:8px 12px;border-radius:10px;cursor:pointer}
+  .tab{background:#101728;border:1px solid var(--line);color:#cfe0ff;padding:8px 12px;border-radius:8px;cursor:pointer}
   .tab.active{background:#1a2440;border-color:#3b4a79}
   .panel{display:none;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:12px}
   .panel.active{display:block}
   .muted{color:var(--muted)}
-  .btn{background:linear-gradient(180deg,#3b66ff,#2f55d1);border:none;border-radius:10px;color:#fff;padding:10px 14px;cursor:pointer;font-weight:700}
+  .btn{background:linear-gradient(180deg,var(--brand),#2f64c7);border:none;border-radius:8px;color:#fff;padding:10px 14px;cursor:pointer;font-weight:700}
   .btn.ghost{background:#141b2b;border:1px solid var(--line);color:#e7eeff}
   .btn.warn{background:linear-gradient(180deg,#f59e0b,#d97706)}
   .btn.ok{background:linear-gradient(180deg,#22c55e,#16a34a)}
   .grid{display:grid;gap:12px}
   .g2{grid-template-columns:1fr 1fr}
   .g3{grid-template-columns:repeat(3,1fr)}
-  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
-  .card{background:#0f1523;border:1px solid var(--line);border-radius:12px;padding:12px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px}
+  .card{display:flex;gap:8px;align-items:flex-start;background:#0f1523;border:1px solid var(--line);border-radius:8px;padding:8px}
   .card:hover{background:var(--hover);cursor:pointer}
-  .title{font-weight:800;margin-bottom:6px}
+  .title{font-weight:700;margin-bottom:4px}
   .hr{height:1px;background:var(--line);margin:12px 0}
   textarea, select, input[type=number]{width:100%;background:#101728;border:1px solid var(--line);color:#e6eeff;padding:8px 10px;border-radius:8px}
   .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:8px}
   table{width:100%;border-collapse:collapse}
   th,td{border-bottom:1px solid var(--line);padding:8px;font-size:14px;text-align:left}
+  th code, td code{font-family:"JetBrains Mono",ui-monospace,monospace}
   .adv{background:#101728;border:1px dashed var(--line);border-radius:10px;padding:10px;margin-top:8px}
-  .adv > summary{cursor:pointer;font-weight:800}
-  .toast{position:fixed;bottom:16px;right:16px;background:#101522;border:1px solid var(--line);color:#cfe3ff;padding:10px 14px;border-radius:8px;opacity:0;transform:translateY(10px);transition:.2s}
+  .adv > summary{cursor:pointer;font-weight:700}
+  .toast{position:fixed;bottom:16px;right:16px;background:#101522;border:1px solid var(--line);color:#cfe3ff;padding:10px 14px;border-radius:8px;opacity:0;transform:translateY(10px);transition:.2s;z-index:200}
   .toast.show{opacity:1;transform:translateY(0)}
   .badge{background:#1a243a;border:1px solid #324064;color:#cfe3ff;padding:5px 8px;border-radius:999px;font-size:12px}
   .chip{background:var(--chip);border:1px solid var(--chipline);color:#d3e3ff;padding:6px 10px;border-radius:999px;font-size:12px}
   .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
   .kpi{background:#10192b;border:1px solid var(--line);padding:10px;border-radius:10px}
-  .kpi .big{font-weight:900;font-size:20px}
+  .kpi .big{font-weight:800;font-size:20px}
   .flex{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
   .subtle{opacity:.85}
   .divider{height:1px;background:var(--line);margin:8px 0}
-  /* utilitários (corrige CSS fantasma) */
   .mt8{margin-top:8px}
   .w100{width:100%}
-  .code{background:#0b0e13;border:1px solid #22283b;color:#cfe3ff;padding:10px;border-radius:8px;font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;overflow:auto}
+  .code{background:#0b0e13;border:1px solid #22283b;color:#cfe3ff;padding:10px;border-radius:8px;font-family:"JetBrains Mono",ui-monospace,monospace;overflow:auto}
+  /* Stepper */
+  .stepper{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-bottom:10px}
+  .step{display:flex;align-items:center;gap:8px;flex:1}
+  .dot{width:24px;height:24px;border-radius:50%;display:inline-grid;place-items:center;font-weight:800;border:2px solid #2b3a5d;background:#0f1624;color:#9fb0c9}
+  .step.active .dot{background:var(--brand);border-color:var(--brand);color:#fff}
+  .step.done .dot{background:var(--ok);border-color:var(--ok);color:#001}
+  .bar{height:2px;background:#2b3a5d;flex:1;border-radius:2px}
+  .step.done + .bar{background:var(--ok)}
+  /* Sticky actions */
+  .sticky-actions{position:sticky;top:56px;z-index:50;background:linear-gradient(180deg,#121827,#0f1117);border-bottom:1px solid var(--line);padding:8px;display:flex;gap:8px;align-items:center}
+  /* Skeleton shimmer */
+  .skeleton{position:relative;overflow:hidden;background:#0f1624;border-radius:8px}
+  .skeleton::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg, transparent, rgba(255,255,255,.06), transparent);animation:sh 1.2s infinite;transform:translateX(-100%)}
+  @keyframes sh{100%{transform:translateX(100%)}}
+  .sk-row{height:14px;margin:8px;border-radius:6px}
+  /* Histogram overlay */
+  .hlegend{display:flex;gap:10px;align-items:center}
+  .swatch{width:12px;height:12px;border-radius:3px;display:inline-block}
+  /* PII highlight */
+  .pii input, .pii select{border-color:#ef4444!important}
+  .pii .pii-flag{color:#ef4444;margin-left:4px}
   /* Chat IA */
   .chat{display:flex;flex-direction:column;gap:10px;max-width:900px}
   .chatlog{border:1px solid var(--line);border-radius:12px;min-height:240px;max-height:380px;overflow:auto;background:#101728;padding:10px}
@@ -64,6 +88,11 @@
   .from{font-weight:800;min-width:80px}
   .bubble{background:#0f1523;border:1px solid var(--line);border-radius:10px;padding:8px;flex:1}
   .me .bubble{background:#18304a}
+  /* Icons */
+  .icon{width:18px;height:18px;opacity:.9}
+  /* Wizard with sidebar summary */
+  .wizard-layout{display:grid;grid-template-columns:1fr 280px;gap:12px}
+  .sidebar{position:sticky;top:110px;align-self:start;background:#101728;border:1px solid var(--line);border-radius:10px;padding:12px}
 </style>
 </head>
 <body>
@@ -71,10 +100,9 @@
   <div class="top">
     <div class="brand">Heuriskien — Synthetic Data (DaaS)</div>
     <div class="row">
-      <label for="apiBase" class="subtle">API Base</label>
+      <label for="apiBase" class="subtle">API</label>
       <input id="apiBase" type="text" value="http://localhost:8000" aria-label="URL base da API"/>
       <button id="btnApi" class="btn ghost">Salvar</button>
-      <a id="docs" class="subtle" href="http://localhost:8000/docs" target="_blank" rel="noopener">/docs</a>
     </div>
   </div>
 
@@ -88,32 +116,25 @@
       <button class="tab" data-tab="about" aria-selected="false">Trust</button>
     </div>
 
-    <!-- HOME / CATÁLOGO -->
+    <!-- HOME -->
     <section id="panel-home" class="panel active">
       <h2>Catálogo & Templates</h2>
-      <p class="muted">Comece com um template (inclui “Diários”) ou abra datasets publicados. Não enviamos dados reais; geramos amostras sintéticas.</p>
+      <p class="muted">Comece com um template (inclui “Diários”) ou abra datasets publicados.</p>
 
       <h3>Templates — Segmentos</h3>
       <div class="cards" id="tplCardsSegment">
-        <div class="card" data-preset="retail"><div class="title">🛍️ Varejo — Clientes</div><div class="muted">Idade, Gênero, Renda, Score…</div></div>
-        <div class="card" data-preset="health"><div class="title">🏥 Saúde — Pacientes</div><div class="muted">Idade, Procedimento, Custo…</div></div>
-        <div class="card" data-preset="finfraud"><div class="title">💳 Financeiro — Fraude</div><div class="muted">Valor, Score de risco, Canal…</div></div>
-      </div>
-
-      <div class="hr"></div>
-      <h3>Templates — “Diários” (Métricas Operacionais)</h3>
-      <div class="cards" id="tplCardsDiarios">
-        <div class="card" data-preset="diarios_venda"><div class="title">📈 Venda Diária</div><div class="muted">$ VENDA, % MRG, LB, PMV, Temp...</div></div>
-        <div class="card" data-preset="diarios_open"><div class="title">🧾 Open</div><div class="muted">Cobertura, Estoques, Carteira...</div></div>
-        <div class="card" data-preset="diarios_carteira"><div class="title">📦 Carteira</div><div class="muted">Categoria, Nº Pedido, PMP...</div></div>
-        <div class="card" data-preset="diarios_pmp_antigos"><div class="title">⏳ PMP antigos</div><div class="muted">Backlog</div></div>
-        <div class="card" data-preset="diarios_cob_loja"><div class="title">🏬 Cobertura Loja</div><div class="muted">EI, Carteira, COB...</div></div>
-        <div class="card" data-preset="diarios_estoque_det"><div class="title">🗂️ Estoque Detalhado</div><div class="muted">Depto, Família, Grupo...</div></div>
-        <div class="card" data-preset="diarios_idade_cd"><div class="title">🏭 Idade CD</div><div class="muted">Últ. entrada, idade, qtd...</div></div>
-        <div class="card" data-preset="diarios_idade_loja"><div class="title">🛒 Idade Loja</div><div class="muted">%Est, %Venda, PMV...</div></div>
-        <div class="card" data-preset="diarios_part_preco"><div class="title">💲 Participação por preço</div><div class="muted">Faixas, QTVENDA...</div></div>
-        <div class="card" data-preset="diarios_sem_venda"><div class="title">🛑 Produtos sem venda</div><div class="muted">Loja/Produto/Idade...</div></div>
-        <div class="card" data-preset="diarios_resumo_cob"><div class="title">🧮 Resumo Cobertura</div><div class="muted">%Rep Venda, Var, COB...</div></div>
+        <div class="card" data-preset="retail">
+          <svg class="icon" viewBox="0 0 24 24"><path fill="currentColor" d="M3 3h18v4H3V3m2 6h14v12H5V9m3 2v8h2v-8H8m6 0v8h2v-8h-2Z"/></svg>
+          <div><div class="title">Varejo — Clientes</div><div class="muted">Idade, Renda, Score…</div></div>
+        </div>
+        <div class="card" data-preset="health">
+          <svg class="icon" viewBox="0 0 24 24"><path fill="currentColor" d="M19 6.5A6.5 6.5 0 0 0 12.5 0 6.5 6.5 0 0 0 6 6.5C6 9 8 12 12.5 16.5 17 12 19 9 19 6.5Z"/></svg>
+          <div><div class="title">Saúde — Pacientes</div><div class="muted">Procedimento, Custo…</div></div>
+        </div>
+        <div class="card" data-preset="finfraud">
+          <svg class="icon" viewBox="0 0 24 24"><path fill="currentColor" d="M2 7h20v10H2V7m2 2v6h16V9H4Z"/></svg>
+          <div><div class="title">Financeiro — Fraude</div><div class="muted">Valor, Score, Canal…</div></div>
+        </div>
       </div>
 
       <div class="hr"></div>
@@ -122,173 +143,46 @@
       <p class="muted" id="catalogEmpty">Nenhum dataset publicado ainda. Gere e clique em “Publicar no Catálogo”.</p>
     </section>
 
-    <!-- WIZARD -->
+    <!-- WIZARD with Sidebar Summary -->
     <section id="panel-wizard" class="panel">
-      <!-- Passo 1 -->
-      <div id="w1">
-        <h2>1) Template & Prompt</h2>
-        <div class="grid g2">
-          <div>
-            <h3>Templates rápidos</h3>
-            <div class="cards" id="tplCardsWizard">
-              <div class="card" data-preset="retail"><div class="title">🛍️ Varejo — Clientes</div></div>
-              <div class="card" data-preset="health"><div class="title">🏥 Saúde — Pacientes</div></div>
-              <div class="card" data-preset="finfraud"><div class="title">💳 Financeiro — Fraude</div></div>
-              <div class="card" data-preset="diarios_venda"><div class="title">📈 Diários — Venda Diária</div></div>
-              <div class="card" data-preset="diarios_open"><div class="title">🧾 Diários — Open</div></div>
-              <div class="card" data-preset="diarios_carteira"><div class="title">📦 Diários — Carteira</div></div>
-            </div>
-          </div>
-          <div>
-            <h3>Prompt (opcional)</h3>
-            <textarea id="prompt" rows="6" placeholder='Ex.: "Gerar Venda Diária com $ VENDA 2018, $ VENDA AP, % MRG ATUAL, PMV AP, TEMP MÁX, etc."'></textarea>
-            <div class="flex mt8">
-              <button id="btnPrompt" class="btn">Converter em Schema</button>
-              <span id="pii" class="pill hidden">⚠️ PII detectada — posso mascarar</span>
-              <button id="btnMask" class="btn warn hidden">Aplicar mascaramento</button>
-            </div>
-            <details class="adv mt8"><summary>Ver Schema sugerido</summary>
-              <pre id="promptSchema" class="code" style="max-height:260px;white-space:pre-wrap">—</pre>
-            </details>
-          </div>
-        </div>
-        <div class="hr"></div>
-        <div class="flex">
-          <button class="btn ok" id="w1next">Continuar →</button>
-        </div>
+      <!-- Stepper -->
+      <div class="stepper" id="stepper">
+        <div class="step active" data-step="0"><span class="dot">1</span><label>Template & Prompt</label></div>
+        <div class="bar"></div>
+        <div class="step" data-step="1"><span class="dot">2</span><label>Campos</label></div>
+        <div class="bar"></div>
+        <div class="step" data-step="2"><span class="dot">3</span><label>Privacidade</label></div>
+        <div class="bar"></div>
+        <div class="step" data-step="3"><span class="dot">4</span><label>Gerar</label></div>
+        <div class="bar"></div>
+        <div class="step" data-step="4"><span class="dot">5</span><label>Avaliar</label></div>
       </div>
 
-      <!-- Passo 2 -->
-      <div id="w2" class="hidden">
-        <h2>2) Campos</h2>
-        <div class="grid g2">
-          <div><label>Nome da tabela</label><input id="tblName" type="text" value="clientes_sinteticos"/></div>
-          <div><label>Linhas</label><input id="rows" type="number" min="1" max="1000000" value="10000"/></div>
+      <div class="wizard-layout">
+        <!-- Content area -->
+        <div id="wizardContent">
+          <!-- Passos são renderizados dinamicamente -->
         </div>
-        <div class="hr"></div>
-        <div class="flex">
-          <h3 style="margin-right:auto">Colunas</h3>
-          <button id="btnAddCol" class="btn ghost">+ Adicionar coluna</button>
-        </div>
-        <div class="table-wrap">
-          <table id="colTable" aria-label="Definição de colunas">
-            <thead><tr>
-              <th>Nome</th><th>Tipo</th><th>Mín</th><th>Máx</th><th>Categorias</th><th>Formato</th><th>QI</th><th>Remover</th>
-            </tr></thead>
-            <tbody id="colBody"></tbody>
-          </table>
-        </div>
-        <div id="colError" class="error" aria-live="polite"></div>
-
-        <details class="adv"><summary>Avançado — Correlações & JSON</summary>
-          <div class="grid g3 mt8">
-            <div><label>Coluna A</label><select id="corrA"></select></div>
-            <div><label>Coluna B</label><select id="corrB"></select></div>
-            <div><label>Coef. (-0.95…0.95)</label><input id="corrV" type="number" step="0.05" min="-0.95" max="0.95" value="0.5"/></div>
-          </div>
-          <div class="flex mt8">
-            <button id="btnAddCorr" class="btn ghost">+ Adicionar correlação</button>
-            <div id="corrList" class="flex"></div>
-          </div>
-          <div class="divider"></div>
-          <pre id="jsonPreview" class="code" style="max-height:240px">—</pre>
-        </details>
-
-        <div class="hr"></div>
-        <div class="flex">
-          <button class="btn ghost" id="w2prev">← Voltar</button>
-          <button class="btn ok" id="w2next" style="margin-left:auto">Continuar →</button>
-        </div>
-      </div>
-
-      <!-- Passo 3 -->
-      <div id="w3" class="hidden">
-        <h2>3) Privacidade</h2>
-        <div class="grid g2">
-          <div><label>Quasi-identificadores</label><div id="qiBox" class="flex"></div></div>
-          <div>
-            <label>Epsilon (menor = mais privacidade)</label>
-            <input id="eps" type="range" min="0.1" max="10" step="0.1" value="1.0" aria-label="Epsilon"/>
-            <div class="flex"><span class="badge">ε: <b id="epsVal">1.0</b></span>
-              <select id="dpMech" aria-label="Mecanismo"><option value="laplace">laplace</option><option value="gaussian">gaussian</option></select>
-            </div>
-          </div>
-        </div>
-        <div class="hr"></div>
-        <div class="flex">
-          <canvas id="gauge" width="240" height="120" aria-label="Privacy Score"></canvas>
-          <div>
-            <div class="kpi">Privacy Score: <span class="big" id="gaugeScore">—</span></div>
-            <div id="gaugeLabel" class="muted">—</div>
-            <div id="gaugeTips" class="muted">—</div>
-          </div>
-        </div>
-        <details class="adv"><summary>Avançado</summary>
-          <label class="flex mt8"><input id="blockDup" type="checkbox" checked/> Bloquear duplicatas exatas</label>
-          <pre id="jsonPreview2" class="code" style="max-height:240px">—</pre>
-        </details>
-        <div class="hr"></div>
-        <div class="flex">
-          <button class="btn ghost" id="w3prev">← Voltar</button>
-          <button class="btn ok" id="w3next" style="margin-left:auto">Continuar →</button>
-        </div>
-      </div>
-
-      <!-- Passo 4 -->
-      <div id="w4" class="hidden">
-        <h2>4) Gerar & Baixar</h2>
-        <div class="flex">
-          <button id="btnGenerate" class="btn">Gerar (POST /generate)</button>
-          <span id="genMsg" class="muted">—</span>
-          <button id="btnPublish" class="btn ok hidden">Publicar no Catálogo</button>
-        </div>
-        <div class="hr"></div>
-        <div class="kpis" id="impactCards">
-          <div class="kpi"><div class="muted">Tempo economizado</div><div class="big" id="kpiTime">—</div></div>
-          <div class="kpi"><div class="muted">Risco reduzido</div><div class="big" id="kpiRisk">—</div></div>
-          <div class="kpi"><div class="muted">Similaridade prevista</div><div class="big" id="kpiSim">—</div></div>
-        </div>
-        <div class="hr"></div>
-        <h3>Preview (20 linhas)</h3>
-        <div class="table-wrap"><table id="preview"><thead></thead><tbody></tbody></table></div>
-        <div class="hr"></div>
-        <h3>Arquivos</h3>
-        <div id="files" class="flex muted">—</div>
-        <div class="hr"></div>
-        <div class="flex">
-          <button class="btn ghost" id="w4prev">← Voltar</button>
-          <button class="btn ok" id="w4next" style="margin-left:auto">Continuar →</button>
-        </div>
-      </div>
-
-      <!-- Passo 5 -->
-      <div id="w5" class="hidden">
-        <h2>5) Avaliar</h2>
-        <div class="grid g2">
-          <div><label>CSV Real (amostra)</label><input id="realCsv" type="file" accept=".csv,text/csv"/></div>
-          <div><label>CSV Sintético (opcional)</label><input id="synCsv" type="file" accept=".csv,text/csv"/></div>
-        </div>
-        <div class="flex mt8">
-          <button id="btnEval" class="btn">Comparar (POST /evaluate)</button>
-          <div class="flex" id="badges"></div>
-        </div>
-        <details class="adv mt8">
-          <summary>Detalhar (JSON & Heatmap)</summary>
-          <pre id="evalJson" class="code" style="max-height:260px;white-space:pre-wrap">—</pre>
-          <div class="grid g3 mt8">
-            <div><div class="muted">Real</div><canvas id="heatReal" width="320" height="320"></canvas></div>
-            <div><div class="muted">Sintético</div><canvas id="heatSyn" width="320" height="320"></canvas></div>
-            <div><div class="muted">Δ Absoluto</div><canvas id="heatDelta" width="320" height="320"></canvas></div>
-          </div>
-        </details>
-        <div class="hr"></div>
-        <button id="btnReport" class="btn ok">Gerar Relatório (impressão/PDF)</button>
+        <!-- Sidebar Summary -->
+        <aside class="sidebar">
+          <div class="title">Resumo do Dataset</div>
+          <div class="mt8"><span class="muted">Tabela</span><div id="sumTable" class="kpi">—</div></div>
+          <div class="mt8"><span class="muted">Linhas</span><div id="sumRows" class="kpi">—</div></div>
+          <div class="mt8"><span class="muted">Privacy Score</span><div id="sumPrivacy" class="kpi">—</div></div>
+        </aside>
       </div>
     </section>
 
-    <!-- DATASET (lite) -->
+    <!-- DATASET (sticky actions) -->
     <section id="panel-dataset" class="panel">
-      <h2 id="dsTitle">Dataset — (nenhum publicado)</h2>
+      <div class="sticky-actions">
+        <a id="dsCsv" class="btn ghost" target="_blank" rel="noopener">Baixar CSV</a>
+        <a id="dsParquet" class="btn ghost" target="_blank" rel="noopener">Baixar Parquet</a>
+        <button id="dsSql" class="btn ghost">Seed SQL</button>
+        <button id="dsApi" class="btn ghost">Chamar API</button>
+        <button id="dsSchedule" class="btn ghost">Agendar</button>
+      </div>
+      <h2 id="dsTitle" class="mt8">Dataset — (nenhum publicado)</h2>
       <div class="flex">
         <div class="badge" id="dsStatus">Status: —</div>
         <div class="badge" id="dsVersion">Versão: —</div>
@@ -299,19 +193,10 @@
       <h3>Contrato de Dados</h3>
       <div id="dsContract" class="muted" style="white-space:pre-wrap">—</div>
       <div class="hr"></div>
-      <h3>Ações</h3>
-      <div class="flex">
-        <a id="dsCsv" class="btn ghost" target="_blank" rel="noopener">Baixar CSV</a>
-        <a id="dsParquet" class="btn ghost" target="_blank" rel="noopener">Baixar Parquet</a>
-        <button id="dsSql" class="btn ghost">Seed em SQL</button>
-        <button id="dsApi" class="btn ghost">Chamar por API</button>
-        <button id="dsSchedule" class="btn ghost">Agendar</button>
-      </div>
-      <div class="hr"></div>
       <h3>Scorecards</h3>
       <div class="kpis">
         <div class="kpi"><div class="muted">Privacy (ε, QIs, EMR)</div><div class="big" id="scPrivacy">—</div></div>
-        <div class="kpi"><div class="muted">Quality (KS/Chi/JSD)</div><div class="big" id="scQuality">—</div></div>
+        <div class="kpi"><div class="muted">Quality (KS/JS)</div><div class="big" id="scQuality">—</div></div>
         <div class="kpi"><div class="muted">Utility (Δ corr)</div><div class="big" id="scUtility">—</div></div>
       </div>
       <div class="hr"></div>
@@ -321,15 +206,15 @@
 
     <!-- ASSISTENTE IA -->
     <section id="panel-assistant" class="panel">
-      <h2>Assistente IA — Explicações sobre os dados</h2>
-      <p class="muted">Pergunte sobre campos, QIs/ε, correlações, avaliação ou aplique um template “Diários”.</p>
+      <div class="sticky-actions"><div class="muted">Assistente IA</div></div>
+      <h3 class="mt8">Pergunte sobre campos, QIs/ε, correlações, avaliação ou aplique um template “Diários”.</h3>
       <div class="flex" id="quickChips">
         <span class="chip" data-q="Quais são os campos e tipos?">Campos</span>
         <span class="chip" data-q="Quais são os QIs e como reduzir risco?">QIs & risco</span>
         <span class="chip" data-q="Explique o que significa epsilon e qual devo usar.">Epsilon</span>
         <span class="chip" data-q="Quais correlações ativas e por quê?">Correlações</span>
         <span class="chip" data-q="Resuma a avaliação do /evaluate.">Resumo avaliação</span>
-        <span class="chip" data-q="Aplique o template Diários — Venda Diária.">Aplique Diários — Venda Diária</span>
+        <span class="chip" data-q="Aplique o template Diários — Venda Diária.">Aplicar Diários — Venda</span>
       </div>
       <div class="chat mt8">
         <div id="chatlog" class="chatlog" aria-live="polite"></div>
@@ -340,32 +225,35 @@
       </div>
     </section>
 
-    <!-- TRUST CENTER -->
+    <!-- TRUST (sticky actions) -->
     <section id="panel-about" class="panel">
-      <h2>Heuriskien — Trust Center</h2>
+      <div class="sticky-actions">
+        <div class="muted">Heuriskien — Trust Center</div>
+        <div style="flex:1"></div>
+        <button class="btn ghost" id="btnSavePrefs">Salvar Preferências</button>
+      </div>
+      <h2 class="mt8">Como protegemos a privacidade e garantimos utilidade</h2>
       <ul>
-        <li>Não copiamos linhas do dado real; evitamos duplicatas e medimos EMR.</li>
-        <li>Privacy Score combina QIs e ε (quanto menor o ε, maior a proteção).</li>
-        <li>Avaliação de utilidade: similaridade e preservação de correlações.</li>
+        <li>Não copiamos linhas do dado real; medimos EMR ≈ 0.</li>
+        <li>Privacy Score combina QIs e ε (ε menor → mais proteção).</li>
+        <li>Avaliação de utilidade com histogramas/JS e heatmap.</li>
         <li>Relatório imprimível (PDF) para auditoria/Compliance.</li>
       </ul>
-      <p class="muted">Recomendações: ε ≤ 1, QIs limitados e EMR ~ 0.</p>
+      <p class="muted">Recomendações: ε ≤ 1, QIs limitados, EMR ~ 0.</p>
     </section>
   </div>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 <script>
-/* ==================== UTIL & NAV ==================== */
-const $  = s => document.querySelector(s);
+/* =============== UTIL & NAV =============== */
+const $ = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
 const toast = (m,t='info') => { const el=$('#toast'); el.textContent=m; el.style.borderColor=(t==='error'?'#ef4444':(t==='warn'?'#f59e0b':'#27324a')); el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),2000); };
 
 let API_BASE = localStorage.getItem('API_BASE') || $('#apiBase').value;
-$('#apiBase').value = API_BASE; if($('#docs')) $('#docs').href = API_BASE.replace(/\/$/,'')+'/docs';
-$('#btnApi').onclick = () => { API_BASE=$('#apiBase').value.trim().replace(/\/$/,''); localStorage.setItem('API_BASE',API_BASE); if($('#docs')) $('#docs').href=API_BASE+'/docs'; toast('API: '+API_BASE); };
+$('#apiBase').value = API_BASE; $('#btnApi').onclick = () => { API_BASE=$('#apiBase').value.trim().replace(/\/$/,''); localStorage.setItem('API_BASE',API_BASE); toast('API: '+API_BASE); };
 
-/* Tabs */
 function showTab(tab){
   ['home','wizard','dataset','assistant','about'].forEach(k=>{
     $('#panel-'+k)?.classList.toggle('active', k===tab);
@@ -373,608 +261,199 @@ function showTab(tab){
     if(tb){ tb.classList.toggle('active', k===tab); tb.setAttribute('aria-selected', String(k===tab)); }
   });
 }
-$('.tabs').addEventListener('click', e=>{
-  const btn=e.target.closest('.tab'); if(!btn) return;
-  showTab(btn.dataset.tab);
-});
+$('.tabs').addEventListener('click', e=>{ const btn=e.target.closest('.tab'); if(!btn) return; showTab(btn.dataset.tab); if(btn.dataset.tab==='wizard') renderStep(0); });
 
-/* ==================== STATE ==================== */
-const schema = {
-  table_name:'clientes_sinteticos',
-  rows:10000,
-  columns:[],
-  correlations:null,
-  quasi_identifiers:[],
-  dp_epsilon:1.0,
-  dp_mechanism:'laplace',
-  block_exact_duplicates:true
-};
-let previewRows = [];
-let filesRef = null;
-let lastEval = null;
-let DATASETS = JSON.parse(localStorage.getItem('HK_DATASETS')||'[]');
+/* =============== STATE =============== */
+const schema = { table_name:'clientes_sinteticos', rows:10000, columns:[], correlations:null, quasi_identifiers:[], dp_epsilon:1.0, dp_mechanism:'laplace', block_exact_duplicates:true };
+let previewRows = []; let filesRef=null; let lastEval=null; let DATASETS = JSON.parse(localStorage.getItem('HK_DATASETS')||'[]');
 function saveCatalog(){ localStorage.setItem('HK_DATASETS', JSON.stringify(DATASETS)); }
 
-/* ==================== PRESETS (inclui “Diários”) ==================== */
+/* =============== PRESETS (compact cards) =============== */
 const PRESETS = {
-  retail:{ table_name:'clientes_sinteticos', rows:10000,
-    columns:[
-      {name:'cliente_id',dtype:'string'},
-      {name:'idade',dtype:'int',min:16,max:80},
-      {name:'genero',dtype:'category',categories:['F','M','X']},
-      {name:'renda',dtype:'float',min:1200,max:25000},
-      {name:'score_credito',dtype:'float',min:0,max:1000},
-      {name:'compra_semanal',dtype:'float',min:0,max:2000},
-      {name:'cidade',dtype:'string'},
-      {name:'estado',dtype:'string'},
-      {name:'data_cadastro',dtype:'date',format:'%Y-%m-%d'}
-    ],
-    correlations:{renda:{score_credito:0.6},idade:{renda:0.3}},
-    quasi_identifiers:['idade','genero','cidade'],
-    dp_epsilon:1.0, dp_mechanism:'laplace', block_exact_duplicates:true
-  },
-  health:{ table_name:'pacientes_sinteticos', rows:8000,
-    columns:[
-      {name:'paciente_id',dtype:'string'},
-      {name:'idade',dtype:'int',min:0,max:100},
-      {name:'genero',dtype:'category',categories:['F','M','X']},
-      {name:'diagnostico',dtype:'category',categories:['A10','B22','C34','D40']},
-      {name:'procedimento',dtype:'category',categories:['PROC_A','PROC_B','PROC_C']},
-      {name:'custo_total',dtype:'float',min:0,max:50000},
-      {name:'data_atendimento',dtype:'date',format:'%Y-%m-%d'}
-    ],
-    correlations:{idade:{custo_total:0.25}},
-    quasi_identifiers:['idade','genero'],
-    dp_epsilon:0.8, dp_mechanism:'laplace', block_exact_duplicates:true
-  },
-  finfraud:{ table_name:'transacoes_sinteticas', rows:20000,
-    columns:[
-      {name:'transacao_id',dtype:'string'},
-      {name:'valor',dtype:'float',min:0,max:20000},
-      {name:'score_risco',dtype:'float',min:0,max:1},
-      {name:'canal',dtype:'category',categories:['app','web','loja']},
-      {name:'pais',dtype:'string'},
-      {name:'chargeback',dtype:'bool'},
-      {name:'data',dtype:'date',format:'%Y-%m-%d'}
-    ],
-    correlations:{valor:{score_risco:0.5}},
-    quasi_identifiers:['pais','canal'],
-    dp_epsilon:1.5, dp_mechanism:'laplace', block_exact_duplicates:true
-  },
-
-  /* ======= DIÁRIOS ======= */
-  diarios_venda:{ table_name:'diarios_venda_diaria', rows:3000,
-    columns:[
-      {name:'data',dtype:'date',format:'%Y-%m-%d'},
-      {name:'venda_2018',dtype:'float'},{name:'venda_ap',dtype:'float'},{name:'vda_meta',dtype:'float'},
-      {name:'delta_venda_18_x_ap',dtype:'float'},{name:'delta_venda_18_x_meta',dtype:'float'},
-      {name:'mrg_atual_pct',dtype:'float',min:0,max:100},{name:'mrg_ap_pct',dtype:'float',min:0,max:100},{name:'mrg_meta_pct',dtype:'float',min:0,max:100},
-      {name:'delta_mrg_pp_18_x_ap',dtype:'float'},
-      {name:'lb_2018',dtype:'float'},{name:'lb_ap',dtype:'float'},{name:'lb_meta',dtype:'float'},
-      {name:'delta_lb_18_x_ap',dtype:'float'},{name:'delta_lb_18_x_meta',dtype:'float'},
-      {name:'lucro_liq_2018',dtype:'float'},{name:'lucro_liq_ap',dtype:'float'},{name:'delta_lucro_18_x_ap',dtype:'float'},
-      {name:'pmv_2018',dtype:'float'},{name:'pmv_ap',dtype:'float'},{name:'delta_pmv_ap',dtype:'float'},
-      {name:'pct_venda_inverno_atual',dtype:'float',min:0,max:100},{name:'pct_venda_inverno_ap',dtype:'float',min:0,max:100},
-      {name:'pct_venda_promo_atual',dtype:'float',min:0,max:100},{name:'pct_venda_promo_ap',dtype:'float',min:0,max:100},
-      {name:'temp_max_18',dtype:'float'},{name:'temp_max_ap',dtype:'float'},
-      {name:'pct_vda_18_fam_dep',dtype:'float',min:0,max:100},{name:'pct_vda_ap_fam_dep',dtype:'float',min:0,max:100},{name:'pct_vda_pl_fam_dep',dtype:'float',min:0,max:100}
-    ],
-    correlations:{ vda_meta:{ mrg_meta_pct:0.4 }, pmv_2018:{ pmv_ap:0.6 } },
-    quasi_identifiers:['data'], dp_epsilon:1.0, dp_mechanism:'laplace', block_exact_duplicates:true
-  },
-  diarios_open:{ table_name:'diarios_open', rows:2000,
-    columns:[
-      {name:'data',dtype:'date',format:'%Y-%m-%d'},
-      {name:'cob_plano_pcs',dtype:'float'},{name:'cob_real_pcs',dtype:'float'},
-      {name:'estq_inicial_plano_pcs',dtype:'float'},{name:'estq_inicial_real_proj_pcs',dtype:'float'},
-      {name:'pct_estoque_maior_100dd',dtype:'float',min:0,max:100},
-      {name:'venda_plano_pcs',dtype:'float'},{name:'venda_real_proj_pcs',dtype:'float'},{name:'venda_ap_pcs',dtype:'float'},
-      {name:'carteira_pcs',dtype:'float'},{name:'entrada_pcs',dtype:'float'},{name:'estq_final_proj_pcs',dtype:'float'},
-      {name:'pct_renov_venda',dtype:'float',min:0,max:100},{name:'pct_estouro_sobre_plano',dtype:'float',min:0,max:100},
-      {name:'open_pcs',dtype:'float'},{name:'open_custo',dtype:'float'},
-      {name:'venda_forecast_$',dtype:'float'},{name:'venda_plano_$',dtype:'float'},{name:'venda_real_proj_$',dtype:'float'},{name:'venda_ap_$',dtype:'float'},
-      {name:'lb_forecast_$',dtype:'float'},{name:'lb_plano_$',dtype:'float'},{name:'lb_real_proj_$',dtype:'float'},{name:'lb_ap_$',dtype:'float'},
-      {name:'inercia_venda_$',dtype:'float'},
-      {name:'delta_venda_ap_pcs',dtype:'float'},{name:'delta_venda_ap_$',dtype:'float'},{name:'delta_venda_ap_lb',dtype:'float'},
-      {name:'pmv_plano',dtype:'float'},{name:'pmv_real',dtype:'float'},{name:'pmv_ap',dtype:'float'},
-      {name:'pmv_carteira',dtype:'float'},{name:'pmv_entrada',dtype:'float'},{name:'pmv_entrada_carteira',dtype:'float'},
-      {name:'margem_forecast',dtype:'float',min:0,max:100},{name:'margem_plano',dtype:'float',min:0,max:100},{name:'margem_real',dtype:'float',min:0,max:100},{name:'margem_ap',dtype:'float',min:0,max:100},
-      {name:'margem_carteira',dtype:'float',min:0,max:100},{name:'margem_entrada',dtype:'float',min:0,max:100},{name:'margem_entrada_carteira',dtype:'float',min:0,max:100},
-      {name:'venda_plano_custo',dtype:'float'},{name:'venda_real_proj_custo',dtype:'float'},{name:'venda_ap_custo',dtype:'float'},
-      {name:'estq_inicial_plano_custo',dtype:'float'},{name:'estq_inicial_real_proj_custo',dtype:'float'},{name:'estq_final_proj_custo',dtype:'float'}
-    ],
-    correlations:{ 'venda_plano_$':{'lb_plano_$':0.7}, 'venda_real_proj_$':{'lb_real_proj_$':0.7} },
-    quasi_identifiers:['data'], dp_epsilon:1.2, dp_mechanism:'laplace', block_exact_duplicates:true
-  },
-  diarios_carteira:{ table_name:'diarios_carteira', rows:6000,
-    columns:[
-      {name:'descricao_categoria',dtype:'string'},{name:'num_pedido',dtype:'string'},{name:'descricao_resumida',dtype:'string'},
-      {name:'fabricante',dtype:'string'},{name:'faixa_preco',dtype:'string'},{name:'preco_venda',dtype:'float'},
-      {name:'tem_distrib',dtype:'bool'},{name:'semana_otb',dtype:'string'},{name:'pmp',dtype:'string'},
-      {name:'dt_entrega',dtype:'date',format:'%Y-%m-%d'},{name:'data_agendamento',dtype:'date',format:'%Y-%m-%d'},
-      {name:'qt_comp',dtype:'int'},{name:'margem_entrada',dtype:'float',min:0,max:100},{name:'custo_$',dtype:'float'}
-    ],
-    correlations:{ preco_venda:{ margem_entrada:0.2 } },
-    quasi_identifiers:['fabricante','faixa_preco'], dp_epsilon:1.5, dp_mechanism:'laplace', block_exact_duplicates:true
-  },
-  diarios_pmp_antigos:{ table_name:'diarios_pmp_antigos_abertos', rows:1200,
-    columns:[
-      {name:'pmp',dtype:'string'},{name:'situacao',dtype:'category',categories:['em_aberto','parcial','cancelado','entregue']},
-      {name:'idade_dias',dtype:'int',min:0,max:365},{name:'valor_$',dtype:'float'}
-    ],
-    correlations:null, quasi_identifiers:['pmp'], dp_epsilon:1.0, dp_mechanism:'laplace', block_exact_duplicates:true
-  },
-  diarios_cob_loja:{ table_name:'diarios_cobertura_loja', rows:4000,
-    columns:[
-      {name:'depto',dtype:'string'},{name:'cluster_depto',dtype:'string'},
-      {name:'ei_m',dtype:'float'},{name:'parado_cd_transito',dtype:'float'},{name:'carteira',dtype:'float'},
-      {name:'ei_cart_m1',dtype:'float'},{name:'venda_proj_m',dtype:'float'},{name:'venda_plan_m',dtype:'float'},{name:'venda_plan_m1',dtype:'float'},
-      {name:'cob_m',dtype:'float'},{name:'cob_ei_cart_m1',dtype:'float'}
-    ],
-    correlations:{ 'venda_proj_m':{'cob_m':-0.2} },
-    quasi_identifiers:['depto','cluster_depto'], dp_epsilon:1.3, dp_mechanism:'laplace', block_exact_duplicates:true
-  },
-  diarios_estoque_det:{ table_name:'diarios_estoque_detalhado', rows:15000,
-    columns:[
-      {name:'departamento',dtype:'string'},{name:'familia',dtype:'string'},{name:'grupo',dtype:'string'},{name:'categoria',dtype:'string'},
-      {name:'codigo',dtype:'string'},{name:'descricao',dtype:'string'},{name:'estoque_atual',dtype:'int'},{name:'num_produtos',dtype:'int'}
-    ],
-    correlations:null, quasi_identifiers:['departamento','familia','grupo','categoria'], dp_epsilon:2.0, dp_mechanism:'laplace', block_exact_duplicates:true
-  },
-  diarios_idade_cd:{ table_name:'diarios_idade_cd', rows:7000,
-    columns:[
-      {name:'codlocal',dtype:'string'},{name:'nome_loja',dtype:'string'},
-      {name:'dt_ult_ent_cd',dtype:'date',format:'%Y-%m-%d'},
-      {name:'codproduto',dtype:'string'},{name:'descricao_detalhada',dtype:'string'},
-      {name:'area_venda',dtype:'string'},{name:'idade_cd_dias',dtype:'int',min:0,max:365},{name:'quantidade',dtype:'int'}
-    ],
-    correlations:null, quasi_identifiers:['codlocal','codproduto'], dp_epsilon:1.8, dp_mechanism:'laplace', block_exact_duplicates:true
-  },
-  diarios_idade_loja:{ table_name:'diarios_idade_loja', rows:7000,
-    columns:[
-      {name:'part_est_total_pct',dtype:'float',min:0,max:100},{name:'part_vnd_qtde_pct',dtype:'float',min:0,max:100},
-      {name:'est_total',dtype:'int'},{name:'qtvenda',dtype:'int'},{name:'pmv',dtype:'float'},{name:'vlvenda',dtype:'float'},
-      {name:'margem_vnd',dtype:'float',min:0,max:100},{name:'margem_est',dtype:'float',min:0,max:100},{name:'mkd_pct',dtype:'float',min:0,max:100}
-    ],
-    correlations:{ est_total:{ qtvenda:-0.3 } }, quasi_identifiers:[], dp_epsilon:1.0, dp_mechanism:'laplace', block_exact_duplicates:true
-  },
-  diarios_part_preco:{ table_name:'diarios_participacao_preco', rows:5000,
-    columns:[
-      {name:'preco_base',dtype:'float'},{name:'est_total',dtype:'int'},{name:'qtvenda',dtype:'int'},{name:'cart',dtype:'int'},
-      {name:'margem_pct',dtype:'float',min:0,max:100}
-    ],
-    correlations:{ preco_base:{ margem_pct:0.15 } }, quasi_identifiers:[], dp_epsilon:1.0, dp_mechanism:'laplace', block_exact_duplicates:true
-  },
-  diarios_sem_venda:{ table_name:'diarios_sem_venda_loja', rows:6000,
-    columns:[
-      {name:'departamento',dtype:'string'},{name:'codlocal',dtype:'string'},{name:'nome_loja',dtype:'string'},
-      {name:'codproduto',dtype:'string'},{name:'descricao_detalhada',dtype:'string'},{name:'area_venda',dtype:'string'},
-      {name:'dt_ult_ent',dtype:'date',format:'%Y-%m-%d'},{name:'idade_stk_loja_dias',dtype:'int',min:0,max:730},{name:'qtde_stk',dtype:'int'}
-    ],
-    correlations:null, quasi_identifiers:['departamento','codlocal','codproduto'], dp_epsilon:1.7, dp_mechanism:'laplace', block_exact_duplicates:true
-  },
-  diarios_resumo_cob:{ table_name:'diarios_resumo_cob_loja', rows:4000,
-    columns:[
-      {name:'codlocal',dtype:'string'},{name:'nome_loja',dtype:'string'},
-      {name:'rep_pct_vnd_pc',dtype:'float',min:0,max:100},{name:'var_vnd_pc_18_x_ap',dtype:'float'},
-      {name:'vnd_pc_dez_18',dtype:'float'},{name:'vnd_pc_dez_ap',dtype:'float'},
-      {name:'ei_m1',dtype:'float'},{name:'ei_cart_m1',dtype:'float'},{name:'ei_dez_2017',dtype:'float'},
-      {name:'cob_ei_m1',dtype:'float'},{name:'cob_ei_cart_m1',dtype:'float'},
-      {name:'cob_ei_18_ref_ap',dtype:'float'},{name:'cob_ei_cart_18_ref_ap',dtype:'float'},{name:'cob_ei_dez_2017',dtype:'float'}
-    ],
-    correlations:null, quasi_identifiers:['codlocal'], dp_epsilon:1.4, dp_mechanism:'laplace', block_exact_duplicates:true
-  }
+  retail:{ table_name:'clientes_sinteticos', rows:10000, columns:[{name:'cliente_id',dtype:'string'},{name:'idade',dtype:'int'},{name:'renda',dtype:'float'}] },
+  health:{ table_name:'pacientes_sinteticos', rows:8000, columns:[{name:'paciente_id',dtype:'string'},{name:'idade',dtype:'int'},{name:'diagnostico',dtype:'string'}] },
+  finfraud:{ table_name:'transacoes_sinteticas', rows:20000, columns:[{name:'transacao_id',dtype:'string'},{name:'valor',dtype:'float'},{name:'score_risco',dtype:'float'}] }
 };
-/* ==================== APLICA PRESET ==================== */
-function applySchema(sch){
-  schema.table_name = sch.table_name || 'synthetic_table';
-  schema.rows = sch.rows || 10000;
-  schema.columns = (sch.columns||[]).map(c=>({...c}));
-  schema.correlations = sch.correlations || null;
-  schema.quasi_identifiers = (sch.quasi_identifiers||[]).slice();
-  schema.dp_epsilon = sch.dp_epsilon ?? 1.0;
-  schema.dp_mechanism = sch.dp_mechanism || 'laplace';
-  schema.block_exact_duplicates = sch.block_exact_duplicates!==false;
-  $('#tblName').value = schema.table_name;
-  $('#rows').value = schema.rows;
-  renderColumns(); renderCorrSelectors(); renderQI(); renderJSON(); drawGauge();
-}
-/* Listeners de cards (Home + Wizard) */
-function bindTemplateCards(){
-  ['tplCardsSegment','tplCardsDiarios','tplCardsWizard'].forEach(id=>{
-    const el = $('#'+id); if(!el) return;
-    el.addEventListener('click', e=>{
-      const k=e.target.closest('[data-preset]')?.dataset?.preset;
-      if(!k || !PRESETS[k]) return;
-      applySchema(PRESETS[k]);
-      showTab('wizard'); currentStepIdx = 1; updateWizard();
-      toast('Template aplicado: '+k);
-    });
-  });
-}
-bindTemplateCards();
-
-/* ==================== PROMPT + PII ==================== */
-const PII = [/\bcnpj\b/i,/\bcpf\b/i,/\brg\b/i,/\bnome(s)? real(is)?\b/i,/\bemail(s)?\b/i,/\btelefone(s)?\b/i,/\bendere[cç]o\b/i,/\bcart[aã]o de cr[eé]dito\b/i];
-$('#btnPrompt').onclick = async ()=>{
-  const prompt = $('#prompt').value.trim(); if(!prompt){ toast('Escreva um prompt.','warn'); return; }
-  try{
-    const res = await fetch(API_BASE+'/prompt',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})});
-    if(!res.ok) throw new Error(await res.text());
-    const sch = await res.json();
-    $('#promptSchema').textContent = JSON.stringify(sch,null,2);
-    applySchema(sch);
-    const hasPII = PII.some(r=> r.test(prompt));
-    $('#pii').classList.toggle('hidden', !hasPII);
-    $('#btnMask').classList.toggle('hidden', !hasPII);
-    toast('Schema sugerido carregado.');
-  }catch(err){ console.error(err); toast('Falha no /prompt','error'); }
-};
-$('#btnMask').onclick = ()=>{
-  schema.columns.forEach(c=>{
-    const n=(c.name||'').toLowerCase();
-    if(/cpf|rg|cnpj|email|tel|fone|telefone|endereco|endereço|cartao|cartão/.test(n)) c.dtype='string';
-  });
-  renderColumns(); renderQI(); renderJSON(); toast('Mascaramento aplicado.');
-};
-
-/* ==================== WIZARD NAV (IDs únicos) ==================== */
-const steps = ['w1','w2','w3','w4','w5'];
-let currentStepIdx = 0;
-function updateWizard(){ steps.forEach((id,idx)=> $('#'+id).classList.toggle('hidden', idx!==currentStepIdx)); }
-$('#w1next').onclick = ()=>{ currentStepIdx=1; updateWizard(); };
-$('#w2next').onclick = ()=>{ currentStepIdx=2; updateWizard(); };
-$('#w2prev').onclick = ()=>{ currentStepIdx=0; updateWizard(); };
-$('#w3next').onclick = ()=>{ currentStepIdx=3; updateWizard(); };
-$('#w3prev').onclick = ()=>{ currentStepIdx=1; updateWizard(); };
-$('#w4next').onclick = ()=>{ currentStepIdx=4; updateWizard(); };
-$('#w4prev').onclick = ()=>{ currentStepIdx=2; updateWizard(); };
-
-/* ==================== BUILDER CAMPOS ==================== */
-const TYPES = ['int','float','string','category','date','bool'];
-function renderColumns(){
-  const tb = $('#colBody'); tb.innerHTML='';
-  schema.columns.forEach((c,idx)=>{
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td><input aria-label="Nome da coluna" value="${c.name||''}"/></td>
-      <td><select aria-label="Tipo">${TYPES.map(t=>`<option ${c.dtype===t?'selected':''}>${t}</option>`).join('')}</select></td>
-      <td><input type="number" step="any" aria-label="Mín" value="${c.min??''}"/></td>
-      <td><input type="number" step="any" aria-label="Máx" value="${c.max??''}"/></td>
-      <td><input aria-label="Categorias" placeholder="A,B,C" value="${Array.isArray(c.categories)?c.categories.join(','):(c.categories||'')}"/></td>
-      <td><input aria-label="Formato data" placeholder="%Y-%m-%d" value="${c.format||''}"/></td>
-      <td class="flex"><input type="checkbox" aria-label="QI" ${schema.quasi_identifiers.includes(c.name)?'checked':''}/></td>
-      <td><button class="btn ghost">Remover</button></td>
-    `;
-    const [nameEl,typeEl,minEl,maxEl,catEl,fmtEl,qiEl] = tr.querySelectorAll('input,select');
-    nameEl.oninput = ()=>{ const old=c.name; c.name=nameEl.value.trim(); schema.quasi_identifiers = schema.quasi_identifiers.map(q=> q===old? c.name : q); renderQI(); renderCorrSelectors(); renderJSON(); };
-    typeEl.onchange = ()=>{ c.dtype=typeEl.value; renderCorrSelectors(); renderJSON(); };
-    minEl.oninput = ()=>{ c.min = minEl.value===''?null:Number(minEl.value); renderJSON(); };
-    maxEl.oninput = ()=>{ c.max = maxEl.value===''?null:Number(maxEl.value); renderJSON(); };
-    catEl.oninput = ()=>{ c.categories = catEl.value.trim(); renderJSON(); };
-    fmtEl.oninput = ()=>{ c.format = fmtEl.value.trim(); renderJSON(); };
-    qiEl.onchange = ()=>{ const n=c.name; if(!n) return; if(qiEl.checked && !schema.quasi_identifiers.includes(n)) schema.quasi_identifiers.push(n); if(!qiEl.checked) schema.quasi_identifiers = schema.quasi_identifiers.filter(x=>x!==n); renderQI(); renderJSON(); drawGauge(); };
-    tr.querySelector('button').onclick = ()=>{ schema.columns.splice(idx,1); renderColumns(); renderQI(); renderCorrSelectors(); renderJSON(); };
-    tb.appendChild(tr);
-  });
-  validateCols();
-}
-$('#btnAddCol').onclick = ()=>{ schema.columns.push({name:'coluna_'+(schema.columns.length+1),dtype:'string'}); renderColumns(); };
-$('#tblName').oninput = ()=>{ schema.table_name=$('#tblName').value.trim()||'synthetic_table'; renderJSON(); };
-$('#rows').oninput = ()=>{ const v=Number($('#rows').value)||10000; schema.rows=Math.max(1,Math.min(1000000,v)); renderJSON(); };
-function validateCols(){
-  const err = [];
-  schema.columns.forEach(c=>{
-    if(!c.name) err.push('Coluna sem nome.');
-    if((c.dtype==='int'||c.dtype==='float') && c.min!=null && c.max!=null && Number(c.min)>=Number(c.max)){
-      err.push(`"${c.name}": Mín deve ser menor que Máx.`);
-    }
-  });
-  $('#colError').textContent = err[0]||'';
-  return err.length===0;
-}
-/* Correlações */
-function renderCorrSelectors(){
-  const cols = schema.columns.filter(c=>['int','float'].includes(c.dtype) && c.name).map(c=>c.name);
-  const selA=$('#corrA'), selB=$('#corrB'); selA.innerHTML=cols.map(n=>`<option>${n}</option>`).join(''); selB.innerHTML=cols.map(n=>`<option>${n}</option>`).join('');
-  renderCorrBadges();
-}
-function renderCorrBadges(){
-  const list=$('#corrList'); list.innerHTML='';
-  const corr=schema.correlations||{};
-  Object.keys(corr).forEach(a=>{
-    Object.keys(corr[a]).forEach(b=>{
-      const v=corr[a][b];
-      const span=document.createElement('span'); span.className='badge'; span.textContent=`${a} ↔ ${b} = ${v}`;
-      span.title='Clique para remover';
-      span.onclick=()=>{ delete corr[a][b]; if(!Object.keys(corr[a]).length) delete corr[a]; schema.correlations=Object.keys(corr).length?corr:null; renderCorrBadges(); renderJSON(); };
-      list.appendChild(span);
-    });
-  });
-}
-$('#btnAddCorr').onclick = ()=>{
-  const a=$('#corrA').value, b=$('#corrB').value, v=Number($('#corrV').value);
-  if(!a||!b||a===b||Number.isNaN(v)) return toast('Selecione A, B e coeficiente.','warn');
-  schema.correlations=schema.correlations||{}; schema.correlations[a]=schema.correlations[a]||{}; schema.correlations[a][b]=Math.max(-0.95,Math.min(0.95,v));
-  renderCorrBadges(); renderJSON();
-};
-/* JSON previews */
-function envForBackend(){
-  return { schema: {
-    table_name: schema.table_name,
-    rows: schema.rows,
-    columns: schema.columns.map(c=>{
-      const o={name:c.name,dtype:c.dtype};
-      if((c.dtype==='int'||c.dtype==='float') && c.min!=null) o.min=Number(c.min);
-      if((c.dtype==='int'||c.dtype==='float') && c.max!=null) o.max=Number(c.max);
-      if(c.dtype==='category' && c.categories) o.categories = Array.isArray(c.categories)? c.categories : String(c.categories).split(',').map(s=>s.trim()).filter(Boolean);
-      if(c.dtype==='date' && c.format) o.format=c.format;
-      return o;
-    }),
-    correlations: schema.correlations || null,
-    quasi_identifiers: schema.quasi_identifiers.length? schema.quasi_identifiers : null,
-    dp_epsilon: schema.dp_epsilon,
-    dp_mechanism: schema.dp_mechanism,
-    block_exact_duplicates: !!schema.block_exact_duplicates
-  }};
-}
-function renderJSON(){ const env=envForBackend(); $('#jsonPreview').textContent = JSON.stringify(env,null,2); $('#jsonPreview2').textContent = JSON.stringify(env,null,2); }
-/* QIs & Gauge */
-function renderQI(){
-  const box=$('#qiBox'); box.innerHTML='';
-  const names=schema.columns.map(c=>c.name).filter(Boolean);
-  names.forEach(n=>{
-    const lbl=document.createElement('label'); lbl.className='badge'; lbl.style.cursor='pointer';
-    lbl.innerHTML = `<input type="checkbox" ${schema.quasi_identifiers.includes(n)?'checked':''}/> ${n}`;
-    lbl.querySelector('input').onchange = (e)=>{
-      if(e.target.checked){ if(!schema.quasi_identifiers.includes(n)) schema.quasi_identifiers.push(n); }
-      else { schema.quasi_identifiers = schema.quasi_identifiers.filter(x=>x!==n); }
-      renderJSON(); drawGauge();
-    };
-    box.appendChild(lbl);
-  });
-}
-function privacyRisk(qiCount, epsilon){
-  const risk_qi = Math.min(1, qiCount/4);
-  let risk_dp = 1; if(epsilon!=null && !Number.isNaN(epsilon)) risk_dp = Math.max(0, Math.min(1, (epsilon-1)/9));
-  return Math.max(0, Math.min(1, 0.6*risk_qi + 0.4*risk_dp));
-}
-function drawGauge(){
-  const canvas=$('#gauge'); const ctx=canvas.getContext('2d');
-  const w=canvas.width,h=canvas.height; ctx.clearRect(0,0,w,h);
-  const cx=w/2,cy=h-10, r=Math.min(w,h*1.8)/2, start=Math.PI, end=2*Math.PI;
-  const arc=(col,a0,a1)=>{ ctx.beginPath(); ctx.lineWidth=16; ctx.strokeStyle=col; ctx.arc(cx,cy,r,a0,a1); ctx.stroke(); };
-  arc('#22c55e', start, start+(end-start)*0.33);
-  arc('#f59e0b', start+(end-start)*0.33, start+(end-start)*0.66);
-  arc('#ef4444', start+(end-start)*0.66, end);
-  const qiCount=(schema.quasi_identifiers||[]).length, eps=(schema.dp_epsilon==null?10:schema.dp_epsilon);
-  const risk = privacyRisk(qiCount, eps);
-  const angle = start + risk*(end-start);
-  ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx+(r-8)*Math.cos(angle), cy+(r-8)*Math.sin(angle)); ctx.strokeStyle='#e7eeff'; ctx.lineWidth=3; ctx.stroke();
-  ctx.beginPath(); ctx.arc(cx,cy,4,0,2*Math.PI); ctx.fillStyle='#e7eeff'; ctx.fill();
-  const pct = Math.round((1-risk)*100);
-  $('#gaugeScore').textContent = pct+'/100';
-  $('#gaugeLabel').textContent = risk<.33?'🟢 Baixo (Seguro)':(risk<.66?'🟡 Médio (Cautela)':'🔴 Alto (Risco)');
-  const tips=[]; if(qiCount>2) tips.push('Reduza QIs.'); if(eps>1.0 || eps==null) tips.push('Use ε ≤ 1.0.'); if(!tips.length) tips.push('Configuração ok.');
-  $('#gaugeTips').textContent = 'Sugestões: '+tips.join(' ');
-}
-$('#eps').oninput = ()=>{ const v=Number($('#eps').value); schema.dp_epsilon=v; $('#epsVal').textContent=v.toFixed(1); drawGauge(); renderJSON(); };
-$('#dpMech').onchange = ()=>{ schema.dp_mechanism=$('#dpMech').value; renderJSON(); };
-$('#blockDup').onchange = ()=>{ schema.block_exact_duplicates=!!$('#blockDup').checked; renderJSON(); };
-
-/* ==================== GERAR ==================== */
-function renderTable(rows){
-  const thead=$('#preview thead'), tbody=$('#preview tbody'); thead.innerHTML=''; tbody.innerHTML='';
-  if(!rows || !rows.length){ tbody.innerHTML='<tr><td class="muted">Sem dados</td></tr>'; return; }
-  const cols=Object.keys(rows[0]);
-  thead.innerHTML='<tr>'+cols.map(c=>`<th>${c}</th>`).join('')+'</tr>';
-  tbody.innerHTML=rows.map(r=>'<tr>'+cols.map(c=>`<td>${r[c]??''}</td>`).join('')+'</tr>').join('');
-}
-function kpiImpact(){
-  const cols = schema.columns.length, rows = schema.rows;
-  const minutesSaved = Math.max(1, Math.round((cols*rows)*0.00015));
-  const riskReduction = Math.max(30, Math.min(95, Math.round((1 - Math.min(1, (schema.dp_epsilon||10)/10)) * 90) + 5));
-  const simPred = Math.max(60, Math.min(95, 80 - (schema.dp_epsilon||1) * 2 + (schema.correlations?5:0)));
-  $('#kpiTime').textContent = `${minutesSaved} min`;
-  $('#kpiRisk').textContent = `${riskReduction}%`;
-  $('#kpiSim').textContent = `${simPred}%`;
-}
-$('#btnGenerate').onclick = async ()=>{
-  if(!validateCols()) return toast('Corrija os erros nos campos.','warn');
-  $('#genMsg').textContent='Gerando...';
-  try{
-    const res = await fetch(API_BASE+'/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(envForBackend())});
-    if(!res.ok) throw new Error(await res.text());
-    const out = await res.json();
-    previewRows = out.preview||[]; filesRef=out.files||null;
-    renderTable(previewRows);
-    const box=$('#files'); box.innerHTML='';
-    if(filesRef?.csv){ const a=document.createElement('a'); a.href=API_BASE+'/outputs/'+encodeURIComponent(filesRef.csv.split('/').pop()); a.textContent='Baixar CSV'; a.target='_blank'; box.appendChild(a); }
-    if(filesRef?.parquet){ const a=document.createElement('a'); a.href=API_BASE+'/outputs/'+encodeURIComponent(filesRef.parquet.split('/').pop()); a.textContent='Baixar Parquet'; a.target='_blank'; box.appendChild(a); }
-    if(!box.innerHTML) box.textContent='—';
-    $('#genMsg').textContent='Pronto.'; $('#btnPublish').classList.remove('hidden');
-    kpiImpact(); toast('Dataset gerado.');
-  }catch(err){ console.error(err); $('#genMsg').textContent=''; toast('Falha no /generate','error'); }
-};
-
-/* ==================== CATÁLOGO / DATASET PAGE ==================== */
-function renderCatalog(){
-  const list = $('#catalogList'); list.innerHTML='';
-  if(!DATASETS.length){ $('#catalogEmpty').style.display='block'; return; }
-  $('#catalogEmpty').style.display='none';
-  DATASETS.forEach(ds=>{
-    const card = document.createElement('div'); card.className='card';
-    card.innerHTML = `<div class="title">📦 ${ds.name} <span class="badge">v${ds.version}</span></div>
-      <div class="muted">Privacy: ${ds.privacy||'—'} | Utility: ${ds.utility||'—'}</div>
-      <div class="divider"></div>
-      <button class="btn ghost">Abrir</button>`;
-    card.querySelector('button').onclick = ()=> openDataset(ds.id);
-    list.appendChild(card);
-  });
-}
-function openDataset(id){
-  const ds = DATASETS.find(d=>d.id===id); if(!ds) return;
-  $('#dsTitle').textContent = `Dataset — ${ds.name}`;
-  $('#dsStatus').textContent = 'Status: Ativo';
-  $('#dsVersion').textContent = 'Versão: v'+ds.version;
-  $('#dsPrivacy').textContent = 'Privacy: '+(ds.privacy||'—');
-  $('#dsUtility').textContent = 'Utility: '+(ds.utility||'—');
-  $('#dsContract').textContent = ds.contract || '—';
-  $('#dsCsv').href = ds.files?.csv ? (API_BASE+'/outputs/'+encodeURIComponent(ds.files.csv.split('/').pop())) : '#';
-  $('#dsParquet').href = ds.files?.parquet ? (API_BASE+'/outputs/'+encodeURIComponent(ds.files.parquet.split('/').pop())) : '#';
-  $('#scPrivacy').textContent = ds.scPrivacy || '—';
-  $('#scQuality').textContent = ds.scQuality || '—';
-  $('#scUtility').textContent = ds.scUtility || '—';
-  $('#dsHistory').textContent = (ds.history||[]).join(' | ') || '—';
-  showTab('dataset');
-}
-$('#btnPublish').onclick = ()=>{
-  if(!previewRows.length){ toast('Gere o dataset antes.','warn'); return; }
-  const id = crypto.randomUUID();
-  const version = 1 + (DATASETS.filter(d=>d.name===schema.table_name).length||0);
-  const qiCount=(schema.quasi_identifiers||[]).length, eps=schema.dp_epsilon;
-  const risk=privacyRisk(qiCount, eps); const privScore=Math.round((1-risk)*100);
-  const privacy = `${privScore}/100`;
-  const utility = $('#kpiSim').textContent || '—';
-  const contract = JSON.stringify(envForBackend(), null, 2);
-  const history = [`v${version} publicado em ${new Date().toLocaleString()}`];
-  const scPrivacy = `ε=${eps??'—'} | QIs=${qiCount} | EMR: após avaliação`;
-  const scQuality = `Aguardando avaliação /evaluate`;
-  const scUtility = `Previsto ${utility}`;
-  DATASETS.unshift({id,name:schema.table_name,version,privacy,utility,files:filesRef,contract,history,scPrivacy,scQuality,scUtility});
-  saveCatalog(); renderCatalog(); openDataset(id); toast('Publicado no Catálogo.');
-};
-
-/* ==================== AVALIAÇÃO ==================== */
-const readFileText = f=> new Promise((res,rej)=>{ const r=new FileReader(); r.onerror=()=>rej(new Error('Falha ao ler arquivo')); r.onload=()=>res(String(r.result||'')); r.readAsText(f); });
-const parseCsv = t => { const lines=t.split(/\r?\n/).filter(x=>x.trim()!==''); if(lines.length<2) return []; const head=lines[0].split(',').map(h=>h.trim()); return lines.slice(1).map(L=>{ const c=L.split(','); const o={}; head.forEach((h,i)=>o[h]=(c[i]||'').trim()); return o; }); };
-function numMatrix(rows){ if(!rows.length) return {cols:[],data:[]}; const keys=Object.keys(rows[0]); const numeric=keys.filter(k=>{ let ok=0,tot=0; rows.slice(0,50).forEach(r=>{ const v=r[k]; if(v!==''&&v!=null){ tot++; if(!isNaN(Number(v))) ok++; } }); return tot>0&&ok/tot>0.7; }); const data=rows.map(r=> numeric.map(k=>{ const v=Number(r[k]); return isNaN(v)?null:v; })); return {cols:numeric,data}; }
-function corr({cols,data}){ const n=data.length,m=cols.length; if(!n||!m) return {cols,C:Array.from({length:m},()=>Array(m).fill(0))}; const mean=Array(m).fill(0),cnt=Array(m).fill(0); data.forEach(row=> row.forEach((v,j)=>{ if(v!=null){ mean[j]+=v; cnt[j]++; }})); for(let j=0;j<m;j++) mean[j]=cnt[j]?mean[j]/cnt[j]:0; const std=Array(m).fill(0); data.forEach(row=> row.forEach((v,j)=>{ if(v!=null){ const d=v-mean[j]; std[j]+=d*d; }})); for(let j=0;j<m;j++) std[j]=cnt[j]>1?Math.sqrt(std[j]/(cnt[j]-1)):0; const C=Array.from({length:m},()=>Array(m).fill(0)); for(let i=0;i<m;i++) for(let j=i;j<m;j++){ let s=0,k=0; data.forEach(row=>{ const xi=row[i],xj=row[j]; if(xi!=null&&xj!=null&&std[i]&&std[j]){ s+=((xi-mean[i])/std[i])*((xj-mean[j])/std[j]); k++; }}); const r=k>1?s/(k-1):0; C[i][j]=C[j][i]=Math.max(-1,Math.min(1,r)); } return {cols,C}; }
-function color(v,[vmin,vmax],mode='bwr'){ const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x)); if(mode==='bwr'){ const t=(v-vmin)/(vmax-vmin); const R=Math.round(255*clamp((t-.5)*2,0,1)); const B=Math.round(255*clamp((.5-t)*2,0,1)); const G=Math.round(255*(1-Math.abs(t-.5)*2)*.9); return `rgb(${R},${G},${B})`; } const t=Math.max(0,Math.min(1,v)); const R=Math.round(255*t),G=Math.round(70*(1-t)+40),B=80; return `rgb(${R},${G},${B})`; }
-function drawHeat(canvas, labels, M, range=[-1,1], mode='bwr'){ const ctx=canvas.getContext('2d'),N=labels.length,W=canvas.width,H=canvas.height,cell=Math.floor(Math.min((W-80)/N,(H-80)/N)),ox=60,oy=20; ctx.clearRect(0,0,W,H); for(let i=0;i<N;i++) for(let j=0;j<N;j++){ const v=M[i]?.[j]??0; ctx.fillStyle=color(v,range,mode); ctx.fillRect(ox+j*cell, oy+i*cell, cell, cell); } ctx.fillStyle='#cfe3ff'; ctx.font='12px system-ui'; for(let i=0;i<N;i++){ ctx.fillText(labels[i], 2, oy+i*cell+Math.min(14,cell-2)); ctx.save(); ctx.translate(ox+i*cell+2, 12); ctx.rotate(-Math.PI/4); ctx.fillText(labels[i],0,0); ctx.restore(); } ctx.strokeStyle='#2d3953'; ctx.strokeRect(ox-1,oy-1,cell*N+2,cell*N+2); }
-
-$('#btnEval').onclick = async ()=>{
-  try{
-    const rf=$('#realCsv').files?.[0]; if(!rf) return toast('Selecione um CSV real.','warn');
-    const real=parseCsv(await readFileText(rf));
-    let syn = previewRows; const sf=$('#synCsv').files?.[0]; if(sf){ syn=parseCsv(await readFileText(sf)); }
-    const payload={ real_sample: real.slice(0,2000), synthetic_sample: syn.slice(0,2000) };
-    const res=await fetch(API_BASE+'/evaluate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-    if(!res.ok) throw new Error(await res.text());
-    const out=await res.json(); lastEval=out;
-    $('#evalJson').textContent = JSON.stringify(out,null,2);
-    const badges=$('#badges'); badges.innerHTML='';
-    const qs=out?.overall?.quality_score; const emr=out?.overall?.exact_match_rate;
-    const b1=document.createElement('span'); b1.className='badge'; b1.textContent = 'Quality: '+(qs!=null?(qs*100).toFixed(1)+'%':'—'); badges.appendChild(b1);
-    const b2=document.createElement('span'); b2.className='badge'; b2.textContent = 'Leakage (EMR): '+(emr!=null?emr.toFixed(6):'—'); badges.appendChild(b2);
-
-    const R=corr(numMatrix(real)); const S=corr(numMatrix(syn));
-    const cols=R.cols.filter(c=>S.cols.includes(c)).slice(0,18);
-    const RR=corr({cols, data: real.map(r=> cols.map(k=>Number(r[k]??null)))});
-    const SS=corr({cols, data: syn.map(r=> cols.map(k=>Number(r[k]??null)))});
-    const D=Array.from({length:cols.length},(_,i)=> cols.map((_,j)=> Math.abs((RR.C[i]?.[j]??0)-(SS.C[i]?.[j]??0))));
-    drawHeat($('#heatReal'),  cols, RR.C, [-1,1], 'bwr');
-    drawHeat($('#heatSyn'),   cols, SS.C, [-1,1], 'bwr');
-    drawHeat($('#heatDelta'), cols, D, [0,1],   'wr');
-
-    const ds = DATASETS.find(d=>d.name===schema.table_name);
-    if(ds){
-      ds.scQuality = (qs!=null?(qs*100).toFixed(1)+'%':'—');
-      ds.scPrivacy = (ds.scPrivacy||'').replace('EMR: após avaliação','EMR: '+(emr!=null?emr.toFixed(6):'—'));
-      let sum=0, cnt=0; for(let i=0;i<cols.length;i++){ for(let j=0;j<cols.length;j++){ if(i===j) continue; sum+=D[i][j]; cnt++; } }
-      const util = cnt? 1 - (sum/cnt) : null;
-      ds.scUtility = util!=null? (util*100).toFixed(1)+'%' : '—';
-      saveCatalog(); renderCatalog();
-    }
-    toast('Avaliação concluída.');
-  }catch(err){ console.error(err); toast('Falha no /evaluate','error'); }
-};
-$('#btnReport').onclick = ()=> window.print();
-
-/* ==================== CHAT IA (simples) ==================== */
-const DEFINITIONS = {
-  epsilon: 'ε controla o nível de ruído de privacidade diferencial: quanto menor, mais proteção.',
-  qi: 'Quasi-identificadores (QIs) são colunas que, combinadas, podem reidentificar (ex.: idade+gênero+cidade).',
-  emr: 'Exact Match Rate mede linhas idênticas entre real e sintético (ideal ~0).',
-  utility: 'Utility Score resume o quão bem o sintético preserva correlações do real.'
-};
-function chatPost(role, text){
-  const log = $('#chatlog');
-  const wrap = document.createElement('div'); wrap.className='msg '+(role==='Você'?'me':'bot');
-  wrap.innerHTML = `<div class="from">${role}</div><div class="bubble">${text}</div>`;
-  log.appendChild(wrap); log.scrollTop = log.scrollHeight;
-}
-function explainColumns(){
-  if(!schema.columns.length) return 'Não há colunas definidas ainda.';
-  return '<b>Campos</b>:<br>'+schema.columns.map(c=>{
-    const parts=[`<b>${c.name}</b> <i>(${c.dtype})</i>`];
-    if((c.dtype==='int'||c.dtype==='float') && (c.min!=null||c.max!=null)) parts.push(`min=${c.min??'—'} max=${c.max??'—'}`);
-    if(c.dtype==='category' && c.categories) parts.push(`cats=${Array.isArray(c.categories)?c.categories.join(','):c.categories}`);
-    if(c.dtype==='date' && c.format) parts.push(`formato=${c.format}`);
-    return '• '+parts.join(' — ');
-  }).join('<br>');
-}
-function explainPrivacy(){
-  const qi = schema.quasi_identifiers||[]; const eps=schema.dp_epsilon;
-  const risk = (()=>{
-    const risk_qi = Math.min(1, qi.length/4); let risk_dp=1;
-    if(eps!=null && !Number.isNaN(eps)) risk_dp = Math.max(0, Math.min(1, (eps-1)/9));
-    return Math.max(0, Math.min(1, 0.6*risk_qi + 0.4*risk_dp));
-  })();
-  const score = Math.round((1-risk)*100);
-  return `QIs: <b>${qi.join(', ')||'—'}</b><br>ε = <b>${eps??'—'}</b><br>Privacy Score ≈ <b>${score}/100</b><br><i>Dica:</i> reduza QIs e use ε ≤ 1.0.`;
-}
-function explainCorrelations(){
-  const corr = schema.correlations||{}; const lines=[];
-  for(const a of Object.keys(corr)) for(const b of Object.keys(corr[a])) lines.push(`• ${a} ↔ ${b} = ${corr[a][b]}`);
-  return lines.length? lines.join('<br>') : 'Nenhuma correlação definida.';
-}
-function explainEvaluation(){
-  if(!lastEval) return 'Ainda não há avaliação. Use o passo 5 para comparar.';
-  const qs=lastEval?.overall?.quality_score, emr=lastEval?.overall?.exact_match_rate;
-  return `Quality Score: <b>${qs!=null?(qs*100).toFixed(1)+'%':'—'}</b><br>EMR: <b>${emr!=null?emr.toFixed(6):'—'}</b>`;
-}
-function applyPresetByName(txt){
-  const map = {
-    'diários — venda diária':'diarios_venda','venda diária':'diarios_venda','open':'diarios_open','carteira':'diarios_carteira',
-    'pmp antigos':'diarios_pmp_antigos','cobertura loja':'diarios_cob_loja','estoque detalhado':'diarios_estoque_det',
-    'idade cd':'diarios_idade_cd','idade loja':'diarios_idade_loja','participação por preço':'diarios_part_preco',
-    'produtos sem venda':'diarios_sem_venda','resumo cobertura':'diarios_resumo_cob'
-  };
-  const key = Object.keys(map).find(k=> txt.toLowerCase().includes(k));
-  if(key && PRESETS[map[key]]){ applySchema(PRESETS[map[key]]); showTab('wizard'); currentStepIdx=1; updateWizard(); return `Template aplicado: <b>${key}</b>.`; }
-  return null;
-}
-function answerWithAssistant(q){
-  const qq = q.toLowerCase();
-  if(/campos|colunas|schema/.test(qq)) return explainColumns();
-  if(/qi|privacidade|risco|epsilon|eps\b|privacy/.test(qq)) return explainPrivacy();
-  if(/correla(ç|c)ões|correlacao|correlation/.test(qq)) return explainCorrelations();
-  if(/avali(a|ç)ão|evaluate|quality|emr|utility/.test(qq)) return explainEvaluation();
-  const res = applyPresetByName(qq); if(res) return res;
-  if(/o que (é|eh) epsilon/.test(qq)) return DEFINITIONS.epsilon;
-  if(/o que (é|eh) (qi|quasi)/.test(qq)) return DEFINITIONS.qi;
-  if(/o que (é|eh) emr/.test(qq)) return DEFINITIONS.emr;
-  if(/o que (é|eh) utility/.test(qq)) return DEFINITIONS.utility;
-  return 'Posso explicar <b>campos</b>, <b>QIs/ε</b>, <b>correlações</b>, <b>avaliação</b> ou <b>aplicar templates</b> (ex.: “Aplique Diários — Venda Diária”).';
-}
-$('#chatSend').onclick = ()=>{
-  const input = $('#chatInput'); const msg = input.value.trim(); if(!msg) return;
-  chatPost('Você', msg); input.value='';
-  const reply = answerWithAssistant(msg);
-  setTimeout(()=> chatPost('Assistente', reply), 250);
-};
-$('#quickChips').addEventListener('click', e=>{
-  const q=e.target?.dataset?.q; if(!q) return;
-  $('#chatInput').value=q; $('#chatSend').click();
+['tplCardsSegment'].forEach(id=>{
+  const el=$('#'+id); if(!el) return; el.addEventListener('click', e=>{ const k=e.target.closest('[data-preset]')?.dataset?.preset; if(!k||!PRESETS[k]) return; applySchema(PRESETS[k]); showTab('wizard'); renderStep(0); });
 });
 
-/* ==================== HOME INIT ==================== */
-function renderCatalogInit(){ renderCatalog(); if(!DATASETS.length) $('#catalogEmpty').style.display='block'; }
-renderCatalogInit();
+function applySchema(sch){ schema.table_name=sch.table_name||'synthetic_table'; schema.rows=sch.rows||10000; schema.columns=(sch.columns||[]).map(c=>({...c})); updateSummary(); }
 
-/* ==================== DEFAULT ==================== */
-applySchema(PRESETS.retail); showTab('home'); updateWizard();
+/* =============== WIZARD (render only active step) =============== */
+const steps = ['step0','step1','step2','step3','step4']; // template, campos, privacidade, gerar, avaliar
+let currentStep = 0;
+function setStepper(idx){ currentStep=idx; $$('#stepper .step').forEach((el,i)=>{ el.classList.toggle('active', i===idx); el.classList.toggle('done', i<idx); }); }
+function renderStep(idx){ setStepper(idx); const box=$('#wizardContent');
+  if(idx===0){ box.innerHTML=`
+    <div class="grid g2">
+      <div><label>Nome da tabela</label><input id="tblName" type="text" value="${schema.table_name}"></div>
+      <div><label>Linhas</label><input id="rows" type="number" min="1" max="1000000" value="${schema.rows}"></div>
+    </div>
+    <div class="hr"></div>
+    <div class="flex">
+      <button class="btn" id="next0" disabled>Próximo →</button>
+    </div>`;
+    $('#tblName').oninput=()=>{ schema.table_name=$('#tblName').value.trim()||'synthetic_table'; updateSummary(); validate0(); };
+    $('#rows').oninput=()=>{ const v=Number($('#rows').value)||10000; schema.rows=Math.max(1,Math.min(1000000,v)); updateSummary(); validate0(); };
+    function validate0(){ $('#next0').disabled = !(schema.table_name && schema.rows>=1); }
+    validate0(); $('#next0').onclick=()=>renderStep(1);
+  }
+  if(idx===1){ const rows = schema.columns.map((c,i)=>`<tr data-i="${i}"><td>${c.name||''}</td><td>${c.dtype||''}</td></tr>`).join('')||'<tr><td colspan="2" class="muted">Sem colunas</td></tr>';
+    box.innerHTML=`
+      <div class="flex"><button class="btn ghost" id="addCol">+ Coluna</button></div>
+      <table class="table mt8"><thead><tr><th>Nome</th><th>Tipo</th></tr></thead><tbody id="colBody">${rows}</tbody></table>
+      <div id="detail" class="mt8"></div>
+      <div class="hr"></div>
+      <div class="flex"><button class="btn ghost" id="back1">← Voltar</button><div style="flex:1"></div><button class="btn" id="next1" ${schema.columns.length?'':'disabled'}>Próximo →</button></div>`;
+    $('#addCol').onclick=()=>{ schema.columns.push({name:`coluna_${schema.columns.length+1}`,dtype:'string'}); renderStep(1); };
+    $('#back1').onclick=()=>renderStep(0); $('#next1').onclick=()=>renderStep(2);
+    $('#colBody').onclick=(e)=>{ const tr=e.target.closest('tr'); if(!tr) return; const i=Number(tr.dataset.i); const c=schema.columns[i];
+      $('#detail').innerHTML=`
+        <div class="grid g2">
+          <div><label>Nome</label><input id="dName" type="text" value="${c.name||''}"></div>
+          <div><label>Tipo</label><select id="dType">${['int','float','string','date','category','bool'].map(t=>`<option ${c.dtype===t?'selected':''}>${t}</option>`).join('')}</select></div>
+        </div>
+        <div class="grid g2 mt8">
+          <div><label>Min</label><input id="dMin" type="number" step="any" value="${c.min??''}"></div>
+          <div><label>Max</label><input id="dMax" type="number" step="any" value="${c.max??''}"></div>
+        </div>
+        <div class="grid g2 mt8">
+          <div><label>Categorias</label><input id="dCats" type="text" value="${Array.isArray(c.categories)?c.categories.join(','):(c.categories||'')}"></div>
+          <div><label>Formato (data)</label><input id="dFmt" type="text" placeholder="%Y-%m-%d" value="${c.format||''}"></div>
+        </div>
+        <div class="muted">Dica: se nome contém <b>idade</b> e tipo numérico, sugerimos 0–100.</div>`;
+      $('#dName').oninput=()=>{ c.name=$('#dName').value.trim(); updateSummary(); };
+      $('#dType').onchange=()=>{ c.dtype=$('#dType').value; if(/idade/i.test(c.name) && (c.dtype==='int'||c.dtype==='float')){ c.min=0; c.max=100; $('#dMin').value=0; $('#dMax').value=100; } };
+      $('#dMin').oninput=()=>{ c.min=$('#dMin').value===''?null:Number($('#dMin').value); };
+      $('#dMax').oninput=()=>{ c.max=$('#dMax').value===''?null:Number($('#dMax').value); };
+      $('#dCats').oninput=()=>{ c.categories=$('#dCats').value; };
+      $('#dFmt').oninput=()=>{ c.format=$('#dFmt').value; };
+    };
+  }
+  if(idx===2){ box.innerHTML=`
+    <div class="row"><span class="badge">Quasi-identificadores</span></div>
+    <div id="qiList" class="row mt8"></div>
+    <div class="hr"></div>
+    <div class="row">
+      <label>Epsilon</label>
+      <input id="eps" type="range" min="0.1" max="10" step="0.1" value="${schema.dp_epsilon}">
+      <span id="epsVal" class="badge">ε: ${schema.dp_epsilon.toFixed(1)}</span>
+    </div>
+    <canvas id="gauge" width="260" height="130" class="mt8"></canvas>
+    <div class="row mt8"><button class="btn ghost" id="back2">← Voltar</button><div style="flex:1"></div><button class="btn" id="next2">Próximo →</button></div>`;
+    renderQI(); drawGauge(); updateSummary();
+    $('#eps').oninput=()=>{ schema.dp_epsilon=Number($('#eps').value); $('#epsVal').textContent='ε: '+schema.dp_epsilon.toFixed(1); drawGauge(); updateSummary(); };
+    $('#back2').onclick=()=>renderStep(1); $('#next2').onclick=()=>renderStep(3);
+  }
+  if(idx===3){ box.innerHTML=`
+    <div class="sticky-actions"><button id="btnGenerate" class="btn">Gerar (POST /generate)</button><span id="genMsg" class="muted">—</span><button id="btnPublish" class="btn ok hidden">Publicar</button></div>
+    <div class="kpis mt8" id="impactCards">
+      <div class="kpi"><div class="muted">Tempo economizado</div><div class="big" id="kpiTime">—</div></div>
+      <div class="kpi"><div class="muted">Risco reduzido</div><div class="big" id="kpiRisk">—</div></div>
+      <div class="kpi"><div class="muted">Similaridade prevista</div><div class="big" id="kpiSim">—</div></div>
+    </div>
+    <div class="hr"></div>
+    <h3>Preview (20 linhas)</h3>
+    <div id="skWrap" class="skeleton hidden" style="padding:10px"><div class="sk-row" style="width:90%"></div><div class="sk-row" style="width:95%"></div><div class="sk-row" style="width:92%"></div><div class="sk-row" style="width:96%"></div></div>
+    <div class="table-wrap mt8"><table id="preview"><thead></thead><tbody></tbody></table></div>
+    <div class="hr"></div>
+    <h3>Arquivos</h3>
+    <div id="files" class="flex muted">—</div>
+    <div class="hr"></div>
+    <div class="flex"><button class="btn ghost" id="back3">← Voltar</button><div style="flex:1"></div><button class="btn" id="toEval" disabled>Ir para Avaliar →</button></div>`;
+    $('#back3').onclick=()=>renderStep(2);
+    $('#btnGenerate').onclick=onGenerate; $('#toEval').onclick=()=>renderStep(4);
+  }
+  if(idx===4){ box.innerHTML=`
+    <div class="sticky-actions">
+      <div class="flex">
+        <label class="badge">CSV Real</label><input id="realCsv" type="file" accept=".csv,text/csv"/>
+        <label class="badge">CSV Sintético (opcional)</label><input id="synCsv" type="file" accept=".csv,text/csv"/>
+      </div>
+      <button id="btnEval" class="btn">Comparar (POST /evaluate)</button>
+    </div>
+    <div class="flex mt8" id="badges"></div>
+    <div class="hr"></div>
+    <h3>Histogramas (Real vs. Sintético)</h3>
+    <div class="hlegend mt8"><span class="swatch" style="background:#22c55e"></span><span class="muted">Real</span> <span class="swatch" style="background:#7aa2ff"></span><span class="muted">Sintético</span></div>
+    <canvas id="histCanvas" width="960" height="260" class="mt8"></canvas>
+    <div class="hr"></div>
+    <h3>Heatmap de Correlação</h3>
+    <div class="grid g3 mt8">
+      <div><div class="muted">Real</div><canvas id="heatReal" width="320" height="320"></canvas></div>
+      <div><div class="muted">Sintético</div><canvas id="heatSyn" width="320" height="320"></canvas></div>
+      <div><div class="muted">Δ Absoluto</div><canvas id="heatDelta" width="320" height="320"></canvas></div>
+    </div>
+    <details class="adv mt8"><summary>Detalhar (JSON bruto da avaliação)</summary><pre id="evalJson" class="code" style="max-height:260px;white-space:pre-wrap">—</pre></details>
+    <div class="hr"></div>
+    <button id="btnReport" class="btn ok">Gerar Relatório (impressão/PDF)</button>`;
+    $('#btnEval').onclick=onEvaluate; $('#btnReport').onclick=()=>window.print();
+  }
+}
+
+/* Sidebar Summary */
+function privacyRisk(qiCount, epsilon){ const rq=Math.min(1, qiCount/4); let rd=1; if(epsilon!=null && !Number.isNaN(epsilon)) rd=Math.max(0,Math.min(1,(epsilon-1)/9)); return Math.max(0,Math.min(1,0.6*rq+0.4*rd)); }
+function updateSummary(){ $('#sumTable').textContent=schema.table_name||'—'; $('#sumRows').textContent=schema.rows||'—'; const qi=(schema.quasi_identifiers||[]).length; const eps=schema.dp_epsilon; const risk=privacyRisk(qi,eps); const score=Math.round((1-risk)*100); $('#sumPrivacy').textContent = score+'/100'; }
+
+/* QIs */
+function renderQI(){ const box=$('#qiList'); box.innerHTML=''; (schema.columns||[]).forEach(c=>{ if(!c.name) return; const lbl=document.createElement('label'); lbl.className='chip'; lbl.style.cursor='pointer'; lbl.innerHTML=`<input type="checkbox" ${schema.quasi_identifiers.includes(c.name)?'checked':''}/> ${c.name}`; lbl.querySelector('input').onchange=(e)=>{ if(e.target.checked){ if(!schema.quasi_identifiers.includes(c.name)) schema.quasi_identifiers.push(c.name); } else { schema.quasi_identifiers = schema.quasi_identifiers.filter(x=>x!==c.name);} updateSummary(); drawGauge(); }; box.appendChild(lbl); }); }
+
+/* Gauge */
+function drawGauge(){ const canvas=$('#gauge'); if(!canvas) return; const ctx=canvas.getContext('2d'); const w=canvas.width,h=canvas.height; ctx.clearRect(0,0,w,h); const cx=w/2,cy=h-10, r=Math.min(w,h*1.8)/2, start=Math.PI, end=2*Math.PI; const arc=(col,a0,a1)=>{ ctx.beginPath(); ctx.lineWidth=18; ctx.strokeStyle=col; ctx.arc(cx,cy,r,a0,a1); ctx.stroke(); }; arc('#22c55e', start, start+(end-start)*0.33); arc('#f59e0b', start+(end-start)*0.33, start+(end-start)*0.66); arc('#ef4444', start+(end-start)*0.66, end); const qi=(schema.quasi_identifiers||[]).length, eps=(schema.dp_epsilon==null?10:schema.dp_epsilon); const risk=privacyRisk(qi,eps); const angle=start + risk*(end-start); ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx+(r-10)*Math.cos(angle), cy+(r-10)*Math.sin(angle)); ctx.strokeStyle='#e7eeff'; ctx.lineWidth=3; ctx.stroke(); ctx.beginPath(); ctx.arc(cx,cy,4,0,2*Math.PI); ctx.fillStyle='#e7eeff'; ctx.fill(); }
+
+/* JSON payload */
+function envForBackend(){ return { schema: { table_name:schema.table_name, rows:schema.rows, columns:(schema.columns||[]).map(c=>{ const o={name:c.name,dtype:c.dtype}; if((c.dtype==='int'||c.dtype==='float')&& c.min!=null) o.min=Number(c.min); if((c.dtype==='int'||c.dtype==='float')&& c.max!=null) o.max=Number(c.max); if(c.dtype==='category'&&c.categories) o.categories=Array.isArray(c.categories)?c.categories:String(c.categories).split(',').map(s=>s.trim()).filter(Boolean); if(c.dtype==='date'&&c.format) o.format=c.format; return o; }), correlations:schema.correlations||null, quasi_identifiers:(schema.quasi_identifiers||[]).length?schema.quasi_identifiers:null, dp_epsilon:schema.dp_epsilon, dp_mechanism:schema.dp_mechanism, block_exact_duplicates:!!schema.block_exact_duplicates } } }
+
+/* Generate */
+function setSkeleton(on){ $('#skWrap')?.classList.toggle('hidden', !on); const t=$('#preview'); if(t) t.style.opacity = on?'.25':'1'; }
+function renderTable(rows){ const thead=$('#preview thead'), tbody=$('#preview tbody'); if(!thead||!tbody) return; thead.innerHTML=''; tbody.innerHTML=''; if(!rows||!rows.length){ tbody.innerHTML='<tr><td class="muted">Sem dados</td></tr>'; return; } const cols=Object.keys(rows[0]); thead.innerHTML='<tr>'+cols.map(c=>`<th><code>${c}</code></th>`).join('')+'</tr>'; tbody.innerHTML=rows.map(r=>'<tr>'+cols.map(c=>`<td><code>${r[c]??''}</code></td>`).join('')+'</tr>').join(''); }
+function kpiImpact(){ const cols=schema.columns.length, rows=schema.rows; const minutesSaved=Math.max(1,Math.round((cols*rows)*0.00015)); const riskReduction=Math.max(30,Math.min(95, Math.round((1 - Math.min(1,(schema.dp_epsilon||10)/10))*90)+5)); const simPred=Math.max(60,Math.min(95, 80-(schema.dp_epsilon||1)*2 + (schema.correlations?5:0))); $('#kpiTime').textContent=`${minutesSaved} min`; $('#kpiRisk').textContent=`${riskReduction}%`; $('#kpiSim').textContent=`${simPred}%`; }
+async function onGenerate(){ if(!schema.columns.length){ toast('Adicione colunas antes.','warn'); return;} $('#genMsg').textContent='Gerando...'; setSkeleton(true); try{ const res=await fetch(API_BASE+'/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(envForBackend())}); if(!res.ok) throw new Error(await res.text()); const out=await res.json(); previewRows = out.preview||[]; filesRef=out.files||null; renderTable(previewRows); const box=$('#files'); box.innerHTML=''; if(filesRef?.csv){ const a=document.createElement('a'); a.href=API_BASE+'/outputs/'+encodeURIComponent(filesRef.csv.split('/').pop()); a.textContent='Baixar CSV'; a.target='_blank'; box.appendChild(a);} if(filesRef?.parquet){ const a=document.createElement('a'); a.href=API_BASE+'/outputs/'+encodeURIComponent(filesRef.parquet.split('/').pop()); a.textContent='Baixar Parquet'; a.target='_blank'; box.appendChild(a);} if(!box.innerHTML) box.textContent='—'; $('#genMsg').textContent='Pronto.'; $('#btnPublish').classList.remove('hidden'); $('#toEval')?.removeAttribute('disabled'); kpiImpact(); toast('Dataset gerado.'); }catch(err){ console.error(err); $('#genMsg').textContent=''; toast('Falha no /generate','error'); } finally{ setSkeleton(false);} }
+
+/* Catalog / Dataset */
+function renderCatalog(){ const list=$('#catalogList'); if(!list) return; list.innerHTML=''; if(!DATASETS.length){ $('#catalogEmpty').style.display='block'; return; } $('#catalogEmpty').style.display='none'; DATASETS.forEach(ds=>{ const card=document.createElement('div'); card.className='card'; card.innerHTML=`<div class="title">📦 ${ds.name} <span class="badge">v${ds.version}</span></div><div class="muted">Privacy: ${ds.privacy||'—'} | Utility: ${ds.utility||'—'}</div><div class="divider"></div><button class="btn ghost">Abrir</button>`; card.querySelector('button').onclick=()=>openDataset(ds.id); list.appendChild(card); }); }
+function openDataset(id){ const ds=DATASETS.find(d=>d.id===id); if(!ds) return; $('#dsTitle').textContent=`Dataset — ${ds.name}`; $('#dsStatus').textContent='Status: Ativo'; $('#dsVersion').textContent='Versão: v'+ds.version; $('#dsPrivacy').textContent='Privacy: '+(ds.privacy||'—'); $('#dsUtility').textContent='Utility: '+(ds.utility||'—'); $('#dsContract').textContent=ds.contract||'—'; $('#dsCsv').href=ds.files?.csv?(API_BASE+'/outputs/'+encodeURIComponent(ds.files.csv.split('/').pop())):'#'; $('#dsParquet').href=ds.files?.parquet?(API_BASE+'/outputs/'+encodeURIComponent(ds.files.parquet.split('/').pop())):'#'; $('#scPrivacy').textContent=ds.scPrivacy||'—'; $('#scQuality').textContent=ds.scQuality||'—'; $('#scUtility').textContent=ds.scUtility||'—'; $('#dsHistory').textContent=(ds.history||[]).join(' | ')||'—'; showTab('dataset'); }
+$('#panel-wizard').addEventListener('click', e=>{ if(e.target.id==='btnPublish'){ if(!previewRows.length){ toast('Gere o dataset antes.','warn'); return;} const id=crypto.randomUUID(); const version=1+(DATASETS.filter(d=>d.name===schema.table_name).length||0); const qiCount=(schema.quasi_identifiers||[]).length, eps=schema.dp_epsilon; const risk=privacyRisk(qiCount,eps); const privScore=Math.round((1-risk)*100); const privacy=`${privScore}/100`; const utility=$('#kpiSim')?.textContent||'—'; const contract=JSON.stringify(envForBackend(),null,2); const history=[`v${version} publicado em ${new Date().toLocaleString()}`]; const scPrivacy=`ε=${eps??'—'} | QIs=${qiCount} | EMR: após avaliação`; const scQuality=`Aguardando avaliação /evaluate`; const scUtility=`Previsto ${utility}`; DATASETS.unshift({id,name:schema.table_name,version,privacy,utility,files:filesRef,contract,history,scPrivacy,scQuality,scUtility}); saveCatalog(); renderCatalog(); openDataset(id); toast('Publicado no Catálogo.'); } });
+
+/* Evaluate */
+const readFileText = f=> new Promise((res,rej)=>{ const r=new FileReader(); r.onerror=()=>rej(new Error('Falha ao ler arquivo')); r.onload=()=>res(String(r.result||'')); r.readAsText(f); });
+const parseCsv = t => { const lines=t.split(/\r?\n/).filter(x=>x.trim()!==''); if(lines.length<2) return []; const head=lines[0].split(',').map(h=>h.trim()); return lines.slice(1).map(L=>{ const c=L.split(','); const o={}; head.forEach((h,i)=>o[h]=(c[i]||'').trim()); return o; }); };
+function numMatrix(rows){ if(!rows.length) return {cols:[],data:[]}; const keys=Object.keys(rows[0]); const numeric=keys.filter(k=>{ let ok=0,tot=0; rows.slice(0,60).forEach(r=>{ const v=r[k]; if(v!==''&&v!=null){ tot++; if(!isNaN(Number(v))) ok++; } }); return tot>0&&ok/tot>0.7; }); const data=rows.map(r=> numeric.map(k=>{ const v=Number(r[k]); return isNaN(v)?null:v; })); return {cols:numeric,data}; }
+function corr({cols,data}){ const n=data.length,m=cols.length; if(!n||!m) return {cols,C:Array.from({length:m},()=>Array(m).fill(0))}; const mean=Array(m).fill(0),cnt=Array(m).fill(0); data.forEach(row=> row.forEach((v,j)=>{ if(v!=null){ mean[j]+=v; cnt[j]++; }})); for(let j=0;j<m;j++) mean[j]=cnt[j]?mean[j]/cnt[j]:0; const std=Array(m).fill(0); data.forEach(row=> row.forEach((v,j)=>{ if(v!=null){ const d=v-mean[j]; std[j]+=d*d; }})); for(let j=0;j<m;j++) std[j]=cnt[j]>1?Math.sqrt(std[j]/(cnt[j]-1)):0; const C=Array.from({length:m},()=>Array(m).fill(0)); for(let i=0;i<m;i++) for(let j=i;j<m;j++){ let s=0,k=0; data.forEach(row=>{ const xi=row[i],xj=row[j]; if(xi!=null&&xj!=null&&std[i]&&std[j]){ s+=((xi-mean[i])/std[i])*((xj-mean[j])/std[j]); k++; }}); const r=k>1?s/(k-1):0; C[i][j]=C[j][i]=Math.max(-1,Math.min(1,r)); } return {cols,C}; }
+const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+function color(v,[vmin,vmax],mode='bwr'){ if(mode==='bwr'){ const t=(v-vmin)/(vmax-vmin); const R=Math.round(255*clamp((t-.5)*2,0,1)); const B=Math.round(255*clamp((.5-t)*2,0,1)); const G=Math.round(255*(1-Math.abs(t-.5)*2)*.9); return `rgb(${R},${G},${B})`; } const t=clamp(v,0,1); const R=Math.round(255*t),G=Math.round(70*(1-t)+40),B=80; return `rgb(${R},${G},${B})`; }
+function drawHeat(canvas, labels, M, range=[-1,1], mode='bwr'){ const ctx=canvas.getContext('2d'),N=labels.length,W=canvas.width,H=canvas.height,cell=Math.floor(Math.min((W-80)/N,(H-80)/N)),ox=60,oy=20; ctx.clearRect(0,0,W,H); for(let i=0;i<N;i++) for(let j=0;j<N;j++){ const v=M[i]?.[j]??0; ctx.fillStyle=color(v,range,mode); ctx.fillRect(ox+j*cell, oy+i*cell, cell, cell); } ctx.fillStyle='#cfe3ff'; ctx.font='12px Inter,system-ui'; for(let i=0;i<N;i++){ ctx.fillText(labels[i], 2, oy+i*cell+Math.min(14,cell-2)); ctx.save(); ctx.translate(ox+i*cell+2, 12); ctx.rotate(-Math.PI/4); ctx.fillText(labels[i],0,0); ctx.restore(); } ctx.strokeStyle='#2d3953'; ctx.strokeRect(ox-1,oy-1,cell*N+2,cell*N+2); }
+function hist(arr, bins){ if(!arr.length) return {edges:[0,1],counts:[1]}; const min=Math.min(...arr), max=Math.max(...arr); const edges=[]; for(let i=0;i<=bins;i++) edges.push(min + i*(max-min)/bins); const counts=new Array(bins).fill(0); for(const v of arr){ let idx=edges.findIndex((e,i)=> v>=edges[i] && v<(edges[i+1]??Infinity)); if(idx<0) idx=bins-1; counts[idx]++; } return {edges,counts}; }
+function normalizeCounts(counts){ const s=counts.reduce((a,b)=>a+b,0)||1; return counts.map(c=>c/s); }
+function ecdf(arr){ const a=[...arr].sort((x,y)=>x-y); return x=> a.length? (a.filter(v=>v<=x).length/a.length) : 0; }
+function jsd(p,q){ const m=p.map((pi,i)=>0.5*(pi+q[i])); const kl=(a,b)=>a.reduce((s,ai,i)=> s + (ai>0 && b[i]>0? ai*Math.log(ai/b[i]) : 0),0); const ln2=Math.log(2); return 0.5*(kl(p,m)+kl(q,m))/ln2; }
+function drawOverlayHistogram(canvas, real, syn){ const ctx=canvas.getContext('2d'); const W=canvas.width,H=canvas.height; ctx.clearRect(0,0,W,H); if(!real.length||!syn.length){ ctx.fillStyle='#cfe3ff'; ctx.fillText('Sem dados para histograma', 10, 20); return; } const bins=30; const {edges,counts:cr}=hist(real,bins); const cs=histWithEdges(syn,edges); function histWithEdges(arr,edges){ const counts=new Array(edges.length-1).fill(0); for(const v of arr){ for(let i=0;i<edges.length-1;i++){ if(v>=edges[i] && v<edges[i+1]){ counts[i]++; break; } } } return counts; }
+  const pr=normalizeCounts(cr), ps=normalizeCounts(cs); const left=40, bottom=26, top=10, right=10; const innerW=W-left-right, innerH=H-top-bottom; const maxY = Math.max(...pr, ...ps, 0.01); const bw = innerW/pr.length; for(let i=0;i<pr.length;i++){ const x=left+i*bw, yR=top+innerH*(1-pr[i]/maxY), hR=innerH*pr[i]/maxY; ctx.fillStyle='rgba(34,197,94,0.55)'; ctx.fillRect(x, yR, bw*0.48, hR); const yS=top+innerH*(1-ps[i]/maxY), hS=innerH*ps[i]/maxY; ctx.fillStyle='rgba(122,162,255,0.55)'; ctx.fillRect(x+bw*0.52, yS, bw*0.48, hS); }
+  ctx.strokeStyle='#2d3953'; ctx.beginPath(); ctx.moveTo(left, top); ctx.lineTo(left, top+innerH); ctx.lineTo(left+innerW, top+innerH); ctx.stroke(); const eR=ecdf(real), eS=ecdf(syn); const ksSamples=edges; let ks=0; ksSamples.forEach(x=> ks=Math.max(ks, Math.abs(eR(x)-eS(x)) )); const JSD=jsd(pr,ps); ctx.fillStyle='#cfe3ff'; ctx.font='12px Inter,system-ui'; ctx.fillText(`KS=${ks.toFixed(3)} | JSD=${JSD.toFixed(3)}`, left+6, top+14); }
+
+async function onEvaluate(){ try{ const rf=$('#realCsv').files?.[0]; if(!rf) return toast('Selecione um CSV real.','warn'); const real=parseCsv(await readFileText(rf)); let syn = previewRows; const sf=$('#synCsv').files?.[0]; if(sf){ syn=parseCsv(await readFileText(sf)); } const payload={ real_sample: real.slice(0,2000), synthetic_sample: syn.slice(0,2000) }; const res=await fetch(API_BASE+'/evaluate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}); if(!res.ok) throw new Error(await res.text()); const out=await res.json(); lastEval=out; $('#evalJson').textContent = JSON.stringify(out,null,2); const badges=$('#badges'); badges.innerHTML=''; const qs=out?.overall?.quality_score; const emr=out?.overall?.exact_match_rate; const b1=document.createElement('span'); b1.className='badge'; b1.textContent = 'Quality: '+(qs!=null?(qs*100).toFixed(1)+'%':'—'); badges.appendChild(b1); const b2=document.createElement('span'); b2.className='badge'; b2.textContent = 'Leakage (EMR): '+(emr!=null?emr.toFixed(6):'—'); badges.appendChild(b2); const R=corr(numMatrix(real)); const S=corr(numMatrix(syn)); const cols=R.cols.filter(c=>S.cols.includes(c)).slice(0,18); const RR=corr({cols, data: real.map(r=> cols.map(k=>Number(r[k]??null)))}); const SS=corr({cols, data: syn.map(r=> cols.map(k=>Number(r[k]??null)))}); const D=Array.from({length:cols.length},(_,i)=> cols.map((_,j)=> Math.abs((RR.C[i]?.[j]??0)-(SS.C[i]?.[j]??0)))); drawHeat($('#heatReal'), cols, RR.C, [-1,1], 'bwr'); drawHeat($('#heatSyn'), cols, SS.C, [-1,1], 'bwr'); drawHeat($('#heatDelta'), cols, D, [0,1], 'wr'); const chooseImportant=(rows,numericCols)=>{ if(!rows.length||!numericCols.length) return null; let best=null,bestVar=-1; numericCols.forEach(c=>{ const vals=rows.map(r=>Number(r[c])).filter(v=>!isNaN(v)); const m=vals.reduce((a,b)=>a+b,0)/(vals.length||1); const v=vals.reduce((a,b)=> a+(b-m)*(b-m),0)/(vals.length||1); if(v>bestVar){ bestVar=v; best=c; } }); return best; };
+  const nReal=numMatrix(real), nSyn=numMatrix(syn); const common=nReal.cols.filter(c=> nSyn.cols.includes(c)); const imp=chooseImportant(real,common)||common[0]; const rVals=real.map(r=>Number(r[imp])).filter(v=>!isNaN(v)); const sVals=syn.map(r=>Number(r[imp])).filter(v=>!isNaN(v)); drawOverlayHistogram($('#histCanvas'), rVals, sVals); const ds = DATASETS.find(d=>d.name===schema.table_name); if(ds){ ds.scQuality=(qs!=null?(qs*100).toFixed(1)+'%':'—'); ds.scPrivacy=(ds.scPrivacy||'').replace('EMR: após avaliação','EMR: '+(emr!=null?emr.toFixed(6):'—')); let sum=0,cnt=0; for(let i=0;i<cols.length;i++){ for(let j=0;j<cols.length;j++){ if(i===j) continue; sum+=D[i][j]; cnt++; }} const util=cnt? 1 - (sum/cnt) : null; ds.scUtility=util!=null? (util*100).toFixed(1)+'%' : '—'; saveCatalog(); renderCatalog(); } toast('Avaliação concluída.'); }catch(err){ console.error(err); toast('Falha no /evaluate','error'); } }
+
+/* Assistant (simple rules) */
+const DEFINITIONS = { epsilon:'ε controla o nível de ruído (DP). Menor ε = mais privacidade.', qi:'QIs são colunas que, combinadas, podem reidentificar.', emr:'EMR é a fração de linhas idênticas entre real e sintético (ideal ~0).', utility:'Utility indica o quanto as correlações/estatísticas foram preservadas.' };
+function chatPost(role, text){ const log=$('#chatlog'); if(!log) return; const wrap=document.createElement('div'); wrap.className='msg '+(role==='Você'?'me':'bot'); wrap.innerHTML=`<div class="from">${role}</div><div class="bubble">${text}</div>`; log.appendChild(wrap); log.scrollTop = log.scrollHeight; }
+function explainColumns(){ if(!schema.columns.length) return 'Não há colunas.'; return '<b>Campos</b>:<br>'+schema.columns.map(c=>`• <b>${c.name}</b> <i>(${c.dtype})</i>`).join('<br>'); }
+function explainPrivacy(){ const qi=schema.quasi_identifiers||[]; const eps=schema.dp_epsilon; const risk=privacyRisk(qi.length,eps); const score=Math.round((1-risk)*100); return `QIs: <b>${qi.join(', ')||'—'}</b><br>ε=<b>${eps??'—'}</b><br>Privacy ≈ <b>${score}/100</b>`; }
+function explainCorrelations(){ const c=schema.correlations||{}; const lines=[]; for(const a of Object.keys(c)) for(const b of Object.keys(c[a])) lines.push(`• ${a} ↔ ${b} = ${c[a][b]}`); return lines.length?lines.join('<br>'):'Nenhuma correlação.'; }
+function explainEvaluation(){ if(!lastEval) return 'Sem avaliação ainda.'; const qs=lastEval?.overall?.quality_score, emr=lastEval?.overall?.exact_match_rate; return `Quality: <b>${qs!=null?(qs*100).toFixed(1)+'%':'—'}</b> | EMR: <b>${emr!=null?emr.toFixed(6):'—'}</b>`; }
+function applyPresetByName(txt){ const map={'diários — venda diária':'retail','venda diária':'retail','open':'finfraud','carteira':'retail'}; const key=Object.keys(map).find(k=> txt.toLowerCase().includes(k)); if(key&&PRESETS[map[key]]){ applySchema(PRESETS[map[key]]); showTab('wizard'); renderStep(0); return `Template aplicado: <b>${key}</b>.`; } return null; }
+function answerWithAssistant(q){ const qq=q.toLowerCase(); if(/campos|colunas|schema/.test(qq)) return explainColumns(); if(/qi|privacidade|epsilon|eps\b|privacy/.test(qq)) return explainPrivacy(); if(/correla(ç|c)ões|correlacao/.test(qq)) return explainCorrelations(); if(/avali(a|ç)ão|evaluate|quality|emr|utility/.test(qq)) return explainEvaluation(); const res=applyPresetByName(qq); if(res) return res; if(/o que (é|eh) epsilon/.test(qq)) return DEFINITIONS.epsilon; if(/o que (é|eh) (qi|quasi)/.test(qq)) return DEFINITIONS.qi; if(/o que (é|eh) emr/.test(qq)) return DEFINITIONS.emr; if(/o que (é|eh) utility/.test(qq)) return DEFINITIONS.utility; return 'Posso explicar <b>campos</b>, <b>QIs/ε</b>, <b>correlações</b>, <b>avaliação</b> ou <b>aplicar templates</b>.'; }
+$('#chatSend').onclick = ()=>{ const input=$('#chatInput'); if(!input) return; const msg=input.value.trim(); if(!msg) return; chatPost('Você', msg); input.value=''; setTimeout(()=> chatPost('Assistente', answerWithAssistant(msg)), 180); };
+$('#quickChips').addEventListener('click', e=>{ const q=e.target?.dataset?.q; if(!q) return; $('#chatInput').value=q; $('#chatSend').click(); });
+
+/* Catalog init */
+function renderCatalogInit(){ renderCatalog(); if(!DATASETS.length) $('#catalogEmpty').style.display='block'; }
+
+/* Init */
+renderCatalogInit();
+showTab('home');
+renderStep(0);
 </script>
 </body>
 </html>
